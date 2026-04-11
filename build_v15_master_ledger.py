@@ -10,25 +10,19 @@ print("🧬 INITIALIZING V15.1 MASTER TELEMETRY LEDGER (HYPER-GRANULAR FUSION)..
 # ==============================================================================
 # --- CONFIGURATION: THE 7 CORE FILES ---
 # ==============================================================================
-# 1. The Targets
-UBER_EATS_FILE   = "v5_omni_matrix.csv"
-
-# 2. The Weight Engine
+UBER_EATS_FILE      = "v5_omni_matrix.csv"
 SAMSUNG_WEIGHT_FILE = "com.samsung.health.weight.20260411021045.csv"
 NOOM_ACTIONS_FILE   = "actions.csv" 
-
-# 3. High-Frequency Telemetry
-HR_FILE     = "com.samsung.shealth.tracker.heart_rate.20260411021045.csv"
-STRESS_FILE = "com.samsung.shealth.stress.20260411021045.csv"
-
-# 4. Metabolic & Kinetic Engine
-STEPS_FILE  = "com.samsung.shealth.tracker.pedometer_step_count.20260411021045.csv"
-CALS_FILE   = "com.samsung.shealth.calories_burned.details.20260411021045.csv"
+HR_FILE             = "com.samsung.shealth.tracker.heart_rate.20260411021045.csv"
+STRESS_FILE         = "com.samsung.shealth.stress.20260411021045.csv"
+STEPS_FILE          = "com.samsung.shealth.tracker.pedometer_step_count.20260411021045.csv"
+CALS_FILE           = "com.samsung.shealth.calories_burned.details.20260411021045.csv"
 # ==============================================================================
 
 def load_and_resample(filepath, time_col, data_cols, freq='15min', agg_dict=None):
     try:
-        df = pd.read_csv(filepath, skiprows=1)
+        # BUG FIX: index_col=False prevents Samsung's leading commas from shifting the headers
+        df = pd.read_csv(filepath, skiprows=1, index_col=False)
         if time_col not in df.columns:
             possible_times = ['start_time', 'create_time', 'update_time', 'com.samsung.health.step_count.start_time', 'com.samsung.health.heart_rate.start_time']
             time_col = next((pt for pt in possible_times if pt in df.columns and df[pt].notna().any()), None)
@@ -48,7 +42,7 @@ def load_and_resample(filepath, time_col, data_cols, freq='15min', agg_dict=None
 # --- 1. SENSOR FUSION: DUAL-WEIGHT ENGINE (SAMSUNG + NOOM) ---
 print("Fusing Samsung & Noom Weight Logs...")
 try:
-    df_sam = pd.read_csv(SAMSUNG_WEIGHT_FILE, skiprows=1)
+    df_sam = pd.read_csv(SAMSUNG_WEIGHT_FILE, skiprows=1, index_col=False)
     clean_time_sam = df_sam['create_time'].astype(str).str.replace(r'([-+]\d{2}:?\d{2}|Z)$', '', regex=True)
     df_sam['date'] = pd.to_datetime(clean_time_sam, errors='coerce').dt.floor('D')
     df_sam_wt = df_sam.groupby('date').agg({'weight': 'mean'}).rename(columns={'weight': 'sam_weight'})
@@ -111,7 +105,7 @@ if not df_steps.empty: df_steps.columns = ['step_calories', 'step_distance']
 
 # --- 3. METABOLIC BASELINES ---
 try:
-    df_cals = pd.read_csv(CALS_FILE, skiprows=1)
+    df_cals = pd.read_csv(CALS_FILE, skiprows=1, index_col=False)
     clean_time_cals = df_cals['com.samsung.shealth.calories_burned.create_time'].astype(str).str.replace(r'([-+]\d{2}:?\d{2}|Z)$', '', regex=True)
     df_cals['date'] = pd.to_datetime(clean_time_cals, errors='coerce').dt.floor('D')
     df_cals = df_cals.groupby('date').agg({'com.samsung.shealth.calories_burned.rest_calorie': 'max'})
@@ -145,7 +139,6 @@ else:
     master_df['step_calories'] = 0.0
     master_df['step_distance'] = 0.0
 
-# Merge Daily Data
 master_df['date_floor'] = master_df.index.floor('D')
 
 if not df_weight.empty and weight_cols_to_merge:
@@ -190,9 +183,7 @@ try:
     df_meals = pd.read_csv(UBER_EATS_FILE)
     meal_col = 'Sequence_Target_String' if 'Sequence_Target_String' in df_meals.columns else df_meals.select_dtypes(include=['object']).columns[0]
 
-    # Extract exactly the 'YYYY-MM-DD HH:MM:SS' string, stripping timezone offsets
     clean_meal_time = df_meals['Exact_Time'].astype(str).str.extract(r'(\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2})')[0]
-    
     df_meals['datetime'] = pd.to_datetime(clean_meal_time, errors='coerce')
     df_meals['datetime_15min'] = df_meals['datetime'].dt.round('15min')
 
