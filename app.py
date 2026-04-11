@@ -10,22 +10,20 @@ from sklearn.decomposition import PCA
 from datetime import datetime
 import requests
 
-st.set_page_config(page_title="V8: Latent Space Navigator", page_icon="🧬", layout="wide")
+st.set_page_config(page_title="V9: Live MPC Navigator", page_icon="🧬", layout="wide")
 
-# --- 1. ARCHITECTURE DEFINITIONS ---
-class ChefActor(nn.Module):
-    def __init__(self, state_dim, action_dim=4): 
+# --- 1. ARCHITECTURE: THE BIOLOGICAL PHYSICS ENGINE ---
+class TemporalWorldModel(nn.Module):
+    def __init__(self, state_dim):
         super().__init__()
-        self.net = nn.Sequential(
-            nn.Linear(state_dim, 256), nn.GELU(),
-            nn.Linear(256, 256), nn.GELU(),
-            nn.Linear(256, action_dim),
-            nn.Sigmoid() 
+        self.physics_engine = nn.Sequential(
+            nn.Linear(state_dim, 512), nn.LayerNorm(512), nn.Mish(), nn.Dropout(0.1),
+            nn.Linear(512, 512), nn.LayerNorm(512), nn.Mish(),
+            nn.Linear(512, state_dim)
         )
-        self.max_limits = torch.tensor([300.0, 300.0, 500.0, 24.0])
-    def forward(self, state): return self.net(state) * self.max_limits
+    def forward(self, state_t): return state_t + self.physics_engine(state_t)
 
-# --- 2. THE CONTEXT ENGINE (Smart Defaults) ---
+# --- 2. THE CONTEXT ENGINE ---
 @st.cache_data(ttl=3600)
 def get_live_context():
     lat, lon = 42.723, -84.400 # Okemos, MI
@@ -39,7 +37,7 @@ def get_live_context():
 
 current_temp, current_time = get_live_context()
 
-# --- 3. LOAD THE UNIVERSE & COMPRESS TO LATENT SPACE ---
+# --- 3. LOAD THE UNIVERSE ---
 @st.cache_resource
 def initialize_latent_space():
     with open('v8_physics_env.pkl', 'rb') as f:
@@ -47,21 +45,17 @@ def initialize_latent_space():
     
     state_dim = len(env['feature_cols'])
     
-    # Load AI Chef
-    actor = ChefActor(state_dim)
-    actor.load_state_dict(torch.load('v8_dreamer_checkpoint.pth', map_location='cpu')['actor_state'])
-    actor.eval()
+    # Load the Simulator (We threw away the ChefActor)
+    world_model = TemporalWorldModel(state_dim)
+    world_model.load_state_dict(torch.load('v8_world_model_weights.pth', map_location='cpu'))
+    world_model.eval()
     
-    # Load Matrix
     df = pd.read_csv('v5_omni_matrix.csv')
     baseline = df.iloc[-1].copy()
     
-    # Find Meal Column robustly
     possible_names = ['Display_Name', 'Name', 'Meal', 'Food', 'Sequence_Target_String']
     meal_col = next((c for c in possible_names if c in df.columns), df.select_dtypes(include=['object']).columns[0])
     
-    # --- BUG FIX: ROBUST TIME PARSING ---
-    # Strip the timezone tail (-04:00, -08:00, Z) but let Pandas properly read the AM/PM format
     clean_time = df['Exact_Time'].astype(str).str.replace(r'([-+]\d{2}:?\d{2}|Z)$', '', regex=True)
     df['hour'] = pd.to_datetime(clean_time, errors='coerce').dt.hour
     
@@ -73,23 +67,29 @@ def initialize_latent_space():
         else: return "Late Snack"
     df['Meal_Slot'] = df['hour'].apply(assign_slot)
     
-    # Create the Historical Database
     meal_db = df.groupby([meal_col, 'Meal_Slot']).agg({
         'protein_g': 'mean', 'fat_g': 'mean', 'carbs_g': 'mean', 'calories': 'mean'
     }).reset_index().rename(columns={meal_col: 'Meal_Name'})
     
-    # Run PCA to compress P/F/C into a 2D visual map
     pca = PCA(n_components=2)
     features = meal_db[['protein_g', 'fat_g', 'carbs_g']].fillna(0)
     latent_coords = pca.fit_transform(features)
     meal_db['Latent_X'] = latent_coords[:, 0]
     meal_db['Latent_Y'] = latent_coords[:, 1]
     
-    return actor, env, baseline, meal_db, pca
+    return world_model, env, baseline, meal_db, pca
 
-actor, env, baseline, meal_db, pca = initialize_latent_space()
+world_model, env, baseline, meal_db, pca = initialize_latent_space()
 
-# Determine current likely slot
+# Temporal Slot Multipliers (Prevents the "Impossible Meal")
+slot_ratios = {
+    "Breakfast": 0.25, # 25% of daily macros
+    "Lunch": 0.30,
+    "Dinner": 0.35,
+    "Late Snack": 0.10,
+    "All": 0.33
+}
+
 current_hour = current_time.hour
 if 5 <= current_hour < 11: default_slot = "Breakfast"
 elif 11 <= current_hour < 15: default_slot = "Lunch"
@@ -97,60 +97,32 @@ elif 15 <= current_hour < 22: default_slot = "Dinner"
 else: default_slot = "Late Snack"
 
 # --- 4. THE NAVIGATOR UI ---
-st.title("🧬 V8 Latent Space Navigator")
-st.markdown("Your biological history compressed into a geometric plane. Adjust your current state parameters to drag the Target Vector and find the optimal meal cluster.")
+st.title("🧬 V9 Latent Space Navigator: MPC")
+st.markdown("Real-time Model Predictive Control. Sliders instantly alter the biological simulation, forcing the Target Vector to hunt for state-stabilizing payloads.")
 
 col_left, col_right = st.columns([1, 2])
 
 with col_left:
     st.header("⚙️ Vector Overrides")
-    st.caption(f"Anchored to Okemos, MI | {current_time.strftime('%A, %I:%M %p')} | {current_temp:.1f}°F")
+    st.caption(f"Anchored to Okemos, MI | {current_temp:.1f}°F")
     
-    # Time Filters
-    st.markdown("**Temporal Filter**")
-    selected_slot = st.selectbox("Isolate the map to this specific meal window:", 
-                                 ["All", "Breakfast", "Lunch", "Dinner", "Late Snack"], 
-                                 index=["All", "Breakfast", "Lunch", "Dinner", "Late Snack"].index(default_slot),
-                                 help="Filters the geometric map to only show meals you have historically eaten during this time window.")
+    selected_slot = st.selectbox("Temporal Filter (Scales Payload)", ["All", "Breakfast", "Lunch", "Dinner", "Late Snack"], index=["All", "Breakfast", "Lunch", "Dinner", "Late Snack"].index(default_slot))
     
     st.divider()
-    st.subheader("Biological State")
+    sim_fasting = st.slider("Fasting Window (Hours)", 0.0, 24.0, 6.0, 0.5)
+    sim_guilt = st.slider("Guilt Delta (Yesterday's Deficit/Surplus)", -2000, 2000, 0, 50)
+    sim_temp = st.slider("Ambient Temp Overlay (°F)", 0.0, 100.0, float(current_temp), 1.0)
     
-    sim_fasting = st.slider(
-        "Fasting Window (Hours)", 
-        min_value=0.0, max_value=24.0, value=6.0, step=0.5,
-        help="How long since your last meal. Higher values push the AI's target vector toward dense, calorically heavy recovery foods to stabilize your energy flux."
-    )
-    
-    sim_guilt = st.slider(
-        "Guilt Delta (Yesterday's Deficit/Surplus)", 
-        min_value=-2000, max_value=2000, value=0, step=50,
-        help="Yesterday's caloric balance. Positive numbers (you overate) steer the AI toward lighter, fibrous, low-calorie nodes. Negative numbers (you starved) push it toward comfort and replenishment."
-    )
-    
-    sim_temp = st.slider(
-        "Ambient Temp Overlay (°F)", 
-        min_value=0.0, max_value=100.0, value=float(current_temp), step=1.0,
-        help="Simulated outside weather. Colder temperatures naturally shift the latent target toward warm, fat-heavy comfort clusters."
-    )
-    
+    # Target Fingerprint Control (Exposed to the user now)
     st.divider()
-    st.subheader("Psychological State")
-    
-    sim_friction = st.slider(
-        "Preparation Friction Tolerance", 
-        min_value=0.0, max_value=1.0, value=0.5, step=0.1,
-        help="Your willingness to cook right now. 0.0 means 'I need delivery immediately' (pulls toward fast food clusters). 1.0 means 'I am ready to bake from scratch' (pulls toward high-effort, home-cooked clusters)."
-    )
-    
-    sim_volatility = st.slider(
-        "Noise Injection (Creativity)", 
-        min_value=0.0, max_value=2.0, value=0.5, step=0.1,
-        help="Injects mathematical chaos into the AI's prediction. 0.0 forces the AI to stick strictly to your predictable habits. Higher values force the Oracle to explore weird, forgotten, highly novel corners of your map."
-    )
+    st.subheader("Target Homeostasis")
+    st.caption("The metabolic center the AI is trying to return your body to tomorrow.")
+    target_p = st.number_input("Target Daily Protein", value=99)
+    target_f = st.number_input("Target Daily Fat", value=97)
+    target_c = st.number_input("Target Daily Carbs", value=217)
 
 with col_right:
-    # 1. Update State Vector
+    # 1. Update Current State Vector
     input_dict = baseline[env['feature_cols']].to_dict()
     input_dict['Fasting_Hours_Current'] = sim_fasting
     input_dict['Guilt_Delta_24H'] = sim_guilt
@@ -158,40 +130,61 @@ with col_right:
     
     input_vector = pd.DataFrame([input_dict])[env['feature_cols']].fillna(0)
     scaled_vector = (input_vector.values - env['mean_state']) / env['std_state']
-    state_tensor = torch.FloatTensor(scaled_vector)
+    current_state_tensor = torch.FloatTensor(scaled_vector)
     
-    # 2. Ask the Dreamer what the target payload is
+    # --- V9 MODEL PREDICTIVE CONTROL (The Real-Time Brain) ---
+    # Generate 2000 random meal payloads, scaled roughly to the time of day
+    ratio = slot_ratios[selected_slot]
+    base_p, base_f, base_c = target_p * ratio, target_f * ratio, target_c * ratio
+    
+    # Create a tensor of 2000 guesses [P, F, C, Fasting]
+    guesses = torch.randn(2000, 4) 
+    guesses[:, 0] = torch.clamp((guesses[:, 0] * 20) + base_p, min=0, max=150) # P
+    guesses[:, 1] = torch.clamp((guesses[:, 1] * 20) + base_f, min=0, max=150) # F
+    guesses[:, 2] = torch.clamp((guesses[:, 2] * 40) + base_c, min=0, max=250) # C
+    guesses[:, 3] = sim_fasting # Lock fasting to the slider
+    
+    # Broadcast the current state 2000 times to match the guesses
+    batch_states = current_state_tensor.repeat(2000, 1)
+    batch_states[:, :4] = guesses # Inject the 2000 different meals into the states
+    
+    # Run the 2000 meals through the physics simulator to see tomorrow
     with torch.no_grad():
-        action = actor(state_tensor)
-        
-    # Inject noise based on the creativity slider
-    noise = (torch.randn_like(action) * sim_volatility * 10).numpy()[0]
-    target_p, target_f, target_c, _ = np.clip(action[0].numpy() + noise, a_min=0, a_max=None)
+        tomorrow_states = world_model(batch_states)
     
-    # 3. Transform the Target Payload into the PCA Latent Space
-    target_latent = pca.transform([[target_p, target_f, target_c]])[0]
+    # Grade the results: Which meal brought tomorrow's state closest to homeostasis?
+    # (Assuming first 3 dims are the macros of tomorrow's state)
+    penalty_p = torch.abs(tomorrow_states[:, 0] - ((target_p - env['mean_state'][0]) / env['std_state'][0]))
+    penalty_f = torch.abs(tomorrow_states[:, 1] - ((target_f - env['mean_state'][1]) / env['std_state'][1]))
+    penalty_c = torch.abs(tomorrow_states[:, 2] - ((target_c - env['mean_state'][2]) / env['std_state'][2]))
     
-    # 4. Filter the Database
+    # Add a penalty for extreme volatility in the rest of the 157 dimensions
+    volatility = torch.std(tomorrow_states, dim=1)
+    
+    total_penalty = penalty_p + penalty_f + penalty_c + (volatility * 0.5)
+    
+    # The winner is the index with the lowest penalty
+    best_idx = torch.argmin(total_penalty)
+    best_action = guesses[best_idx].numpy()
+    
+    opt_p, opt_f, opt_c = best_action[0], best_action[1], best_action[2]
+    
+    # --- RENDER THE MAP ---
+    target_latent = pca.transform([[opt_p, opt_f, opt_c]])[0]
+    
     display_db = meal_db.copy()
     if selected_slot != "All":
         display_db = display_db[display_db['Meal_Slot'] == selected_slot]
     
-    # Calculate Geometric Distance to Target
-    display_db['Target_Distance'] = np.sqrt(
-        (display_db['Latent_X'] - target_latent[0])**2 + 
-        (display_db['Latent_Y'] - target_latent[1])**2
-    )
-    
+    display_db['Target_Distance'] = np.sqrt((display_db['Latent_X'] - target_latent[0])**2 + (display_db['Latent_Y'] - target_latent[1])**2)
     top_matches = display_db.sort_values('Target_Distance').head(3)
 
-    # 5. Build the Interactive Plotly Graph
     fig = px.scatter(display_db, x='Latent_X', y='Latent_Y', 
                      color='Meal_Slot', hover_name='Meal_Name',
                      hover_data={'protein_g':':.0f', 'fat_g':':.0f', 'carbs_g':':.0f', 'Latent_X':False, 'Latent_Y':False},
                      title=f"Biological Latent Space ({selected_slot})",
                      template="plotly_dark", size_max=10)
     
-    # Plot the "Target Pin"
     fig.add_trace(go.Scatter(
         x=[target_latent[0]], y=[target_latent[1]],
         mode='markers+text',
@@ -200,7 +193,6 @@ with col_right:
         text=["🎯 TARGET"], textposition="top right"
     ))
     
-    # Draw Relationship Lines to the 3 closest meals
     for _, match in top_matches.iterrows():
         fig.add_trace(go.Scatter(
             x=[target_latent[0], match['Latent_X']],
@@ -212,9 +204,8 @@ with col_right:
 
     st.plotly_chart(fig, use_container_width=True)
 
-    # 6. Output the Data
-    st.subheader("🎯 Mathematical Direct Hits")
-    st.markdown(f"**Optimal Target Payload:** {target_p:.0f}g P | {target_f:.0f}g F | {target_c:.0f}g C")
+    st.subheader("🎯 Real-Time Computed Target")
+    st.markdown(f"**Optimal Single-Meal Payload:** {opt_p:.0f}g P | {opt_f:.0f}g F | {opt_c:.0f}g C")
     
     if not top_matches.empty:
         cols = st.columns(3)
@@ -223,5 +214,3 @@ with col_right:
                 st.success(f"**{match['Meal_Name']}**")
                 st.caption(f"Geodesic Distance: {match['Target_Distance']:.1f}")
                 st.write(f"P: {match['protein_g']:.0f}g | F: {match['fat_g']:.0f}g | C: {match['carbs_g']:.0f}g")
-    else:
-        st.warning("No historical meals found in this time slot.")
