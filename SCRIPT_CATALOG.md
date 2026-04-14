@@ -782,7 +782,64 @@ For each script, the goal is to answer:
 
 ---
 
-# 14. Repo inventory and documentation support
+# 14. Codex runtime support
+
+## `Dockerfile.codex`
+**Status:** current runtime definition  
+**Purpose:** build a small Codex-focused container image for the active temporal workflow.
+
+**Includes**
+- system Python runtime
+- pinned temporal workflow dependencies from `requirements-codex-temporal.txt`
+- `scripts/start_codex.sh` as the default container entrypoint
+
+**Does not do**
+- copy the full repo into the image
+- create a repo-local virtualenv
+- bundle historical artifacts into the build context
+
+**Current project role**
+- provide a reproducible local runtime for documentation, dataset inspection, simple baselines, and temporal smoke tests
+
+## `.dockerignore`
+**Status:** current runtime support file  
+**Purpose:** keep Docker build context small by excluding the data- and artifact-heavy repo contents from the image build.
+
+**Current project role**
+- make the Codex container build fast enough to be practical without mutating project data
+
+## `requirements-codex-temporal.txt`
+**Status:** current runtime dependency lock  
+**Purpose:** pin the Python packages needed by the active temporal workflow.
+
+**Includes**
+- `numpy`
+- `pandas`
+- `scikit-learn`
+- `joblib`
+- `scipy`
+- CPU `torch`
+
+**Current project role**
+- support `build_multires_sequence_dataset_v2.py`
+- support `train_temporal_multires_simple_baselines_v1.py`
+- support CPU smoke-test use of `train_temporal_multires_models_v4_1.py`
+
+## `scripts/start_codex.sh`
+**Status:** current runtime helper  
+**Purpose:** container entrypoint for the Codex image.
+
+**Behavior**
+- switches into `/workspace/foodai`
+- keeps Python output unbuffered
+- starts `bash` by default, or executes the command provided to the container
+
+**Current project role**
+- make the runtime predictable without introducing extra repo state
+
+---
+
+# 15. Repo inventory and documentation support
 
 ## `generate_repo_inventory.py`
 **Status:** current utility  
@@ -794,7 +851,7 @@ For each script, the goal is to answer:
 
 ---
 
-# 15. Practical “current best path” through the repo
+# 16. Practical “current best path” through the repo
 
 If a future developer wants the most relevant current path rather than the full history, it is:
 
@@ -831,7 +888,7 @@ If a future developer wants the most relevant current path rather than the full 
 
 ---
 
-# 16. Final note
+# 17. Final note
 
 This catalog includes more scripts than a new developer should use on day one.
 

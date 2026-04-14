@@ -1,0 +1,6 @@
+*
+!.dockerignore
+!Dockerfile.codex
+!requirements-codex-temporal.txt
+!scripts/
+!scripts/start_codex.sh
