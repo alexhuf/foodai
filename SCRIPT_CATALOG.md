@@ -1,0 +1,825 @@
+# FoodAI Script Catalog
+
+This file documents the important scripts created across the project.
+
+It is organized in approximate creation order and grouped by project phase.
+
+For each script, the goal is to answer:
+- why it exists
+- what it reads
+- what it writes
+- which later stage used those outputs
+- whether it is current or superseded
+
+---
+
+## Legend
+
+- **current** — preferred script for this job
+- **active** — still useful / still used
+- **historical** — informative but not usually rerun
+- **superseded** — replaced by a later version
+- **diagnostic** — analysis / inspection / reporting rather than core production
+- **experimental** — useful for iteration but not canonical
+
+---
+
+# 1. Source build and canonical fusion
+
+## `build_foodai_project.py`
+**Status:** historical / superseded  
+**Purpose:** first end-to-end raw-source build from Samsung + Noom into canonical and fused outputs.
+
+**Reads**
+- `samsung/`
+- `noom/`
+
+**Writes**
+- `canonical/samsung/*`
+- `canonical/noom/*`
+- `fused/*`
+
+**Why it mattered**
+- established the first reliable fused daily/event layer
+
+**Why superseded**
+- later fixes improved active-window logic and Noom budget parsing
+
+**Downstream consumers**
+- later semantic meal builders
+- fused daily/event tables
+- weather/day builders
+
+---
+
+## `build_foodai_project_v2.py`
+**Status:** current historical source builder  
+**Purpose:** corrected raw-source builder.
+
+**Key fixes**
+- fixed `daily_calorie_budgets.csv` parsing
+- focused `master_daily_features.csv` on the intended active period
+- preserved a full-range daily table separately
+
+**Important outputs**
+- `fused/master_daily_features.csv`
+- `fused/master_daily_features_full.csv`
+- `fused/master_event_ledger.csv`
+- `fused/master_15min_telemetry_active.csv`
+
+**Downstream consumers**
+- weather builders
+- day feature matrix
+- meal decision points
+- meal timeline recovery
+- multires sequence work
+
+---
+
+# 2. Meal DB seed, review, and finalization
+
+## `build_meal_db_seed.py`
+**Status:** historical / foundational  
+**Purpose:** deterministic seed generation for meal ontology construction.
+
+**Reads**
+- canonical Noom meal-related sources
+- trusted fused meal/event context
+
+**Writes**
+- `meal_db/seed/raw_food_entry_enriched_seed.csv`
+- `meal_db/seed/food_alias_seed.csv`
+- `meal_db/seed/canonical_food_entity_seed.csv`
+- `meal_db/seed/meal_component_seed.csv`
+- `meal_db/seed/meal_event_seed.csv`
+- `meal_db/seed/seed_manifest.json`
+
+**Next consumer**
+- review batch exporters
+- apply scripts
+- finalization scripts
+
+---
+
+## `export_meal_llm_review_batches.py`
+**Status:** superseded  
+**Purpose:** first batch exporter for alias/entity review.
+
+**Problem**
+- re-exported already-reviewed aliases
+
+---
+
+## `export_meal_llm_review_batches_v2.py`
+**Status:** active historical tool  
+**Purpose:** export only pending/unresolved review batches.
+
+**Writes**
+- `meal_db/review_batches/*`
+- pending-only review manifests
+
+**Next consumer**
+- review process
+- apply scripts
+
+---
+
+## `apply_meal_llm_review_batch.py`
+**Status:** superseded  
+**Purpose:** initial batch apply script.
+
+**Problem**
+- dtype issues
+- awkward move/archive behavior after failure
+
+---
+
+## `apply_meal_llm_review_batch_v2.py`
+**Status:** active  
+**Purpose:** apply reviewed batch semantics into seed/current tables.
+
+**Reads**
+- `meal_db/reviews/<batch_label>/*`
+
+**Writes**
+- updated `meal_db/seed/*`
+- snapshots to `meal_db/current/*`
+- archive state where needed
+
+**Next consumer**
+- finalization scripts
+
+---
+
+## `build_meal_db_final.py`
+**Status:** superseded  
+**Purpose:** first final meal DB assembly.
+
+**Problem**
+- merge and propagation issues
+
+---
+
+## `build_meal_db_final_v2.py`
+**Status:** superseded  
+**Purpose:** second finalization attempt.
+
+**Improved**
+- duplicate-column handling
+- merge stability
+
+**Still insufficient because**
+- final semantic propagation was incomplete
+
+---
+
+## `build_meal_db_final_repaired.py`
+**Status:** superseded  
+**Purpose:** first repair-oriented final rebuild.
+
+**Problem**
+- failed on missing event-column combinations
+
+---
+
+## `build_meal_db_final_repaired_v2.py`
+**Status:** current  
+**Purpose:** preferred repaired final meal DB builder.
+
+**Important outputs**
+- `meal_db/final_repaired/canonical_food_entity.csv`
+- `meal_db/final_repaired/meal_component_edge.csv`
+- `meal_db/final_repaired/meal_semantic_features.csv`
+- `meal_db/final_repaired/food_entry_semantic_view.csv`
+- `meal_db/final_repaired/meal_db_final_manifest.json`
+
+**Next consumers**
+- meal decision points
+- meal prediction view
+- canonical meal timeline recovery
+
+---
+
+# 3. Weather and exogenous context
+
+## `build_weather_context.py`
+**Status:** superseded  
+**Purpose:** first weather/daylight context build.
+
+**Problem**
+- solar/daylight fields were shifted incorrectly
+
+---
+
+## `build_weather_context_v2.py`
+**Status:** current  
+**Purpose:** corrected weather/daylight build.
+
+**Reads**
+- `fused/master_daily_features.csv`
+- `fused/master_15min_telemetry_active.csv`
+
+**Writes**
+- `weather/weather_hourly_raw.csv`
+- `weather/weather_daily_raw.csv`
+- `weather/weather_context_15min.csv`
+- `weather/weather_context_daily.csv`
+- `weather/weather_context_manifest.json`
+
+**Next consumers**
+- day feature matrix
+- meal decision points
+
+---
+
+# 4. Model-ready daily/weekly/meal tables
+
+## `build_day_feature_matrix.py`
+**Status:** current  
+**Purpose:** create the one-row-per-day master modeling table.
+
+**Reads**
+- fused daily layer
+- repaired meal semantic features
+- daily weather context
+
+**Writes**
+- `training/day_feature_matrix.csv`
+- `training/day_feature_matrix_manifest.json`
+
+**Next consumers**
+- weekly and weekend summary builders
+- daily transition targets
+- weekly regime targets
+- scoring / analysis
+- multires sequence pipeline indirectly
+
+---
+
+## `build_week_summary_matrix.py`
+**Status:** current  
+**Purpose:** aggregate day matrix into Monday-based weekly regime rows.
+
+**Writes**
+- `training/week_summary_matrix.csv`
+- manifest
+
+**Next consumers**
+- weekly retrieval
+- representation encoders
+- regime transitions
+- weekly anchor branch
+
+---
+
+## `build_weekend_summary_matrix.py`
+**Status:** current  
+**Purpose:** aggregate day matrix into Friday–Sunday weekend blocks.
+
+**Writes**
+- `training/weekend_summary_matrix.csv`
+- manifest
+
+**Next consumers**
+- weekend retrieval
+- weekend representation
+- weekend regime transitions
+
+---
+
+## `build_meal_decision_points.py`
+**Status:** current  
+**Purpose:** build one-row-per-meal decision dataset.
+
+**Reads**
+- repaired meal semantic outputs
+- day matrix
+- 15-minute telemetry
+- 15-minute weather
+
+**Writes**
+- `training/meal_decision_points.csv`
+- manifest
+
+**Next consumers**
+- meal prediction view
+- meal baselines
+
+---
+
+## `build_meal_prediction_view.py`
+**Status:** current  
+**Purpose:** leakage-aware predictive view for next-meal modeling.
+
+**Reads**
+- `training/meal_decision_points.csv`
+
+**Writes**
+- `training/predictive_views/meal_prediction_view.csv`
+- manifest
+- target specification JSON
+
+**Next consumers**
+- meal baseline training scripts
+
+---
+
+# 5. Meal baseline modeling
+
+## `train_meal_baselines.py`
+**Status:** historical / experimental  
+**Purpose:** initial meal prediction baseline training.
+
+## `train_meal_baselines_v2.py`
+**Status:** superseded / experimental  
+**Purpose:** second meal-baseline iteration.
+
+## `train_meal_baselines_v3.py`
+**Status:** superseded / experimental  
+**Purpose:** third refinement pass.
+
+## `train_meal_baselines_v4.py`
+**Status:** latest meal-baseline branch  
+**Purpose:** current best version of the meal baseline stack from this branch.
+
+**Notes**
+- useful as a meal-side reference branch
+- less central to the current project bottleneck than the daily / weekly / temporal work
+
+---
+
+# 6. Retrieval baselines
+
+## `build_retrieval_baselines.py`
+**Status:** superseded  
+**Purpose:** first retrieval baseline builder over meal/day/week/weekend spaces.
+
+**Spaces created**
+- early meal state / day / week / weekend retrieval artifacts
+
+**Why it mattered**
+- proved the value of similarity-based comparison as a first-class capability
+
+---
+
+## `build_retrieval_baselines_v2.py`
+**Status:** superseded  
+**Purpose:** improved retrieval spaces with cleaner semantics and curated variants.
+
+---
+
+## `build_retrieval_baselines_v3.py`
+**Status:** current retrieval baseline branch  
+**Purpose:** further refined retrieval spaces and artifact organization.
+
+**Next consumers**
+- representation learning
+- comparison workflows
+- future recommendation logic
+
+---
+
+# 7. Representation encoders
+
+## `train_representation_encoders.py`
+**Status:** historical / superseded  
+**Purpose:** first GPU representation-encoder training stage.
+
+**What it established**
+- representation learning can run on the local GPU
+- fixed-length training is possible and resumability matters
+
+---
+
+## `train_representation_encoders_v2.py`
+**Status:** superseded  
+**Purpose:** second pass with improved semantic loss logic.
+
+**Key issue encountered**
+- half-precision overflow in contrastive loss path
+
+---
+
+## `train_representation_encoders_v2_1.py`
+**Status:** superseded  
+**Purpose:** repair pass after v2 instability.
+
+---
+
+## `train_representation_encoders_v3.py`
+**Status:** superseded  
+**Purpose:** stronger representation-learning phase with better task structure.
+
+## `train_representation_encoders_v3_1.py`
+**Status:** superseded  
+**Purpose:** diagnostic improvement / trainer fix pass.
+
+## `train_representation_encoders_v3_2.py`
+**Status:** superseded  
+**Purpose:** extended regime-structure representation training.
+
+**Issue encountered**
+- missing dominant-week categorical columns in some smoke tests
+
+## `train_representation_encoders_v3_2_1.py`
+**Status:** latest repaired representation trainer  
+**Purpose:** patch over v3.2 issues and continue regime representation learning.
+
+**Next consumers**
+- audit layer
+- regime transition modeling
+
+---
+
+## `audit_regime_representation_results.py`
+**Status:** diagnostic  
+**Purpose:** audit classification behavior and class balance for regime representations.
+
+**Writes**
+- audits
+- class-balance views
+- feature summaries
+
+**Next consumer**
+- regime transition target and model design
+
+---
+
+# 8. Weekly regime transition stack
+
+## `build_regime_transition_targets.py`
+**Status:** superseded  
+**Purpose:** first build of weekly regime transition targets.
+
+**Issue**
+- boolean/NaN dtype assignment bug
+
+---
+
+## `build_regime_transition_targets_v2.py`
+**Status:** current  
+**Purpose:** corrected weekly regime transition target builder.
+
+**Writes**
+- weekly transition matrices
+- manifests
+- target-ready supervised next-step labels
+
+**Next consumer**
+- `train_regime_transition_models.py`
+
+---
+
+## `train_regime_transition_models.py`
+**Status:** current anchor branch  
+**Purpose:** train weekly regime transition models.
+
+**Outputs**
+- trained per-target models
+- feature-importance views
+- test predictions / summaries
+
+**Next consumers**
+- inspection / analysis
+- backtests
+- weekly focused branch
+
+---
+
+## `inspect_regime_transition_targets.py`
+**Status:** superseded  
+**Purpose:** first inspection/reporting layer.
+
+**Issue**
+- dependency on `tabulate`
+
+## `inspect_regime_transition_targets_v2.py`
+**Status:** superseded  
+**Purpose:** remove `tabulate` dependency.
+
+**Issue**
+- markdown rendering bug on boolean headers
+
+## `inspect_regime_transition_targets_v3.py`
+**Status:** current inspection layer  
+**Purpose:** reliable inspection report layer for regime transition targets.
+
+---
+
+## `backtest_regime_transition_targets.py`
+**Status:** current diagnostic/backtest tool  
+**Purpose:** rolling or held-out backtests for regime-transition targets.
+
+**Next consumers**
+- threshold scans
+- refined weekly focus branch
+
+---
+
+# 9. Weekly weight-gain focused branch
+
+## `analyze_weekly_weight_gain_focus.py`
+**Status:** diagnostic  
+**Purpose:** isolate the weekly weight-gain target behavior and strongest predictors.
+
+## `train_weekly_weight_gain_refined.py`
+**Status:** superseded  
+**Purpose:** build a refined weekly weight-gain model.
+
+**Issue**
+- report helper missing `df_to_markdown_table`
+
+## `train_weekly_weight_gain_refined_v2.py`
+**Status:** current  
+**Purpose:** repaired refined weekly weight-gain trainer.
+
+## `calibrate_weekly_weight_gain_probabilities.py`
+**Status:** current  
+**Purpose:** calibrate weekly weight-gain probabilities and produce thresholded/operational views.
+
+**Role in project**
+- provides a macro anchor branch complementary to the daily branch
+
+---
+
+# 10. Daily transition and daily weight-direction branch
+
+## `build_daily_transition_targets.py`
+**Status:** superseded  
+**Purpose:** first daily transition target build.
+
+**Issue**
+- could not locate the actual daily source file used in this repo
+
+## `build_daily_transition_targets_v2.py`
+**Status:** superseded  
+**Purpose:** second pass with adjusted source logic.
+
+## `build_daily_transition_targets_v3.py`
+**Status:** current  
+**Purpose:** robust daily transition target builder.
+
+**Writes**
+- `training/daily_transition/days_transition_matrix.csv`
+- manifest
+- daily next-step supervised targets
+
+**Next consumers**
+- daily transition model trainer
+- daily analysis/scoring
+
+---
+
+## `train_daily_transition_models.py`
+**Status:** current anchor branch  
+**Purpose:** train daily transition models for key next-day targets.
+
+**Outputs**
+- trained models
+- test summaries
+- feature importance
+- prediction files
+
+**Next consumers**
+- daily target analysis
+- scoring layers
+- historical scorer
+
+---
+
+## `analyze_daily_weight_direction_targets.py`
+**Status:** superseded  
+**Purpose:** first analysis/calibration layer for daily gain/loss targets.
+
+**Issues**
+- row alignment mismatch
+- calibration leakage problems
+
+## `analyze_daily_weight_direction_targets_v2.py`
+**Status:** current  
+**Purpose:** corrected analysis layer:
+- exact held-out row alignment
+- clean train→val→test calibration path
+
+**Outputs**
+- comparison tables
+- calibration views
+- threshold scans
+- ablation summaries
+
+**Next consumers**
+- operational scorers
+- project decision logic
+
+---
+
+## `score_daily_weight_direction.py`
+**Status:** superseded  
+**Purpose:** first operational scorer for latest day.
+
+**Issue**
+- missing `split_suggested` in rebuilt transition-like frame
+
+## `score_daily_weight_direction_v2.py`
+**Status:** superseded  
+**Purpose:** fixed missing split logic.
+
+**Issue**
+- missing metric imports
+
+## `score_daily_weight_direction_v3.py`
+**Status:** current single-day scorer  
+**Purpose:** operational score for the latest day or a selected day.
+
+**Outputs**
+- current-day gain/loss risk bands
+- local/global driver proxies
+- summary JSON/Markdown
+
+---
+
+## `score_daily_weight_direction_history.py`
+**Status:** current historical scorer  
+**Purpose:** batch-score the full daily history using the validated daily branch.
+
+**Why it mattered**
+- proved the daily bands correspond to real recurring historical regimes
+- major project milestone
+
+---
+
+# 11. Meal modality recovery for temporal modeling
+
+## `build_meal_event_sequence_source.py`
+**Status:** superseded  
+**Purpose:** first attempt to discover a meal-event source for sequence modeling.
+
+**Problem**
+- report writer bug
+
+## `build_meal_event_sequence_source_v2.py`
+**Status:** superseded  
+**Purpose:** report-fix pass.
+
+**Problem**
+- list-like cell rendering bug
+
+## `build_meal_event_sequence_source_v3.py`
+**Status:** superseded logically  
+**Purpose:** robust report rendering.
+
+**Problem**
+- source ranking still selected telemetry-like data rather than a true meal table
+
+---
+
+## `build_canonical_meal_timeline.py`
+**Status:** current  
+**Purpose:** semantically correct meal-timeline recovery.
+
+**Key logic**
+- strongly prefer true meal-event tables
+- penalize telemetry / 15-minute density
+- synthesize meal times only when needed
+- produce canonical meal-event timeline for multires sequences
+
+**Outputs**
+- `training/meal_timeline_canonical/canonical_meal_timeline.csv`
+- manifest / summary / candidate ranking report
+
+**Next consumer**
+- multires sequence dataset builder
+
+---
+
+# 12. Multi-resolution sequence dataset
+
+## `build_multires_sequence_dataset.py`
+**Status:** superseded  
+**Purpose:** first multires sequence packer.
+
+**Issue**
+- duplicate `period_start` label in long-sequence export path
+
+## `build_multires_sequence_dataset_v2.py`
+**Status:** current  
+**Purpose:** corrected multires sequence builder.
+
+**Writes**
+- `anchors.csv`
+- `modality_masks.csv`
+- meals/day/week long sequence exports
+- meals/day/week numeric sequence NPZ bundles
+- manifests and summary reports
+
+**Role in project**
+- direct bridge from anchor/statistical work into temporal deep learning
+
+---
+
+# 13. Temporal multi-resolution model training
+
+## `train_temporal_multires_models.py`
+**Status:** superseded  
+**Purpose:** first real temporal trainer.
+
+**Issue**
+- AMP GradScaler compatibility bug across PyTorch versions
+
+## `train_temporal_multires_models_v2.py`
+**Status:** superseded  
+**Purpose:** AMP compatibility fix.
+
+**Issue**
+- NaN training instability remained
+
+## `train_temporal_multires_models_v3.py`
+**Status:** superseded / diagnostic  
+**Purpose:** stabilize training:
+- GRU AMP safety
+- nonfinite handling improvements
+
+**Result**
+- numerically stable, but not yet competitive with anchors
+
+## `train_temporal_multires_models_v4.py`
+**Status:** superseded  
+**Purpose:** diagnostic ablation trainer.
+
+**Issue**
+- PowerShell empty-argument CLI parsing annoyance for disabled target lists
+
+## `train_temporal_multires_models_v4_1.py`
+**Status:** current temporal diagnostic trainer  
+**Purpose:** current best diagnostic temporal trainer.
+
+**Key features**
+- single-head overrides
+- modality ablations
+- balanced sampler
+- safer smoke tests
+- dual-threshold evaluation
+- prediction diagnostics
+- skipped-batch accounting
+
+**Current project role**
+- determine whether any temporal target/modality combination is promising enough to justify longer runs
+
+---
+
+# 14. Repo inventory and documentation support
+
+## `generate_repo_inventory.py`
+**Status:** current utility  
+**Purpose:** generate a machine-readable and human-readable directory inventory of the repo.
+
+**Why it exists**
+- to keep documentation from depending on chat memory
+- to help future developers maintain an up-to-date repo tree and manifest
+
+---
+
+# 15. Practical “current best path” through the repo
+
+If a future developer wants the most relevant current path rather than the full history, it is:
+
+1. raw/canonical/fused source builder
+   - `build_foodai_project_v2.py`
+
+2. repaired meal semantics
+   - `build_meal_db_final_repaired_v2.py`
+
+3. corrected weather
+   - `build_weather_context_v2.py`
+
+4. model-ready aggregate tables
+   - `build_day_feature_matrix.py`
+   - `build_week_summary_matrix.py`
+   - `build_weekend_summary_matrix.py`
+   - `build_meal_decision_points.py`
+   - `build_meal_prediction_view.py`
+
+5. validated anchor branches
+   - daily transition targets / daily transition models
+   - regime transition targets / regime transition models
+   - daily scoring and historical scoring
+
+6. corrected meal timeline
+   - `build_canonical_meal_timeline.py`
+
+7. multires sequence pack
+   - `build_multires_sequence_dataset_v2.py`
+
+8. temporal diagnostics
+   - `train_temporal_multires_models_v4_1.py`
+
+---
+
+# 16. Final note
+
+This catalog includes more scripts than a new developer should use on day one.
+
+That is intentional.
+
+The point is not only to say what the latest script is.  
+The point is to explain **why there are multiple versions at all**, and which failures or discoveries produced them.
