@@ -190,7 +190,7 @@ At a high level, the project now contains these major layers:
 
 ## 5. Current state in one paragraph
 
-The project has **proven nontrivial signal exists** in multiple anchor branches, especially the daily weight-direction branch and the weekly regime branch. The meal modality was recovered correctly after rejecting an earlier telemetry-grid false positive. A full multi-resolution sequence dataset now exists and the first temporal models have been run. The current blocker is **not data availability**, but **temporal model performance**: the first GRU-based temporal pilots are numerically stable but still underperform the anchored statistical models. The project is therefore in the stage:
+The project has **proven nontrivial signal exists** in multiple anchor branches, especially the daily weight-direction branch and the weekly regime branch. The meal modality was recovered correctly after rejecting an earlier telemetry-grid false positive. A full multi-resolution sequence dataset now exists, conservative flattened temporal baselines have set a strong `days,weeks` binary-loss floor, and bounded GRU / TCN / transformer smoke comparisons have now been run. The current blocker is **not data availability**, but **temporal model performance**: neural temporal runs remain well below both the anchor branches and the current simple temporal floor. The project is therefore in the stage:
 
 > **diagnose which target / modality / architecture combination is genuinely learnable in temporal form before committing to long multi-hour or multi-day neural runs.**
 

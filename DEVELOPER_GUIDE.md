@@ -193,10 +193,11 @@ The sequence pack now has:
 - aligned anchor rows
 
 ### 5.4 Temporal pilots are not yet competitive
-The first GRU temporal runs stabilized after debugging, but they still underperform anchor models.
+The first GRU temporal runs stabilized after debugging, and a later bounded GRU / TCN / transformer comparison was added, but the neural family still underperforms both anchor models and the current simple temporal floor.
 That means:
 - do not discard the anchor branch
 - use anchors as the benchmark
+- use `simple_loss_daysweeks_v2` as the conservative floor for bounded temporal comparisons
 
 ---
 
@@ -210,7 +211,7 @@ Implication:
 - but precise intra-day timing should not be over-trusted
 
 ### 6.2 Temporal logits are under-dispersed
-The current GRU ablations produce overly narrow probability distributions and often collapse to effectively one-class behavior.
+The current GRU and TCN ablations produce overly narrow probability distributions and often collapse to effectively one-class behavior, and the bounded transformer smoke was not interpretable enough to change that assessment.
 
 Implication:
 - current temporal setup is not yet expressive or well-trained enough
