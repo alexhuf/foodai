@@ -95,13 +95,13 @@ This means the current temporal GRU setup is not learning sharp ranking structur
 The non-recurrent lag-window baseline path has now been run.
 
 Most important result:
-- `simple_loss_daysweeks_v1` clearly outperformed the current GRU smoke tests for binary loss prediction
+- `simple_loss_daysweeks_v2` clearly outperformed the current GRU smoke tests for binary loss prediction
 - test ROC AUC = `0.9167`
 - test balanced accuracy = `0.8611`
 - selected model = extra trees on flattened `days,weeks`
 
 Other takeaways:
-- `simple_loss_days_v1` was also materially stronger than the GRU loss smokes
+- `simple_loss_days_v2` was also materially stronger than the GRU loss smokes
 - `days,weeks` beat `days` for the binary loss target
 - regression on `y_next_weight_delta_lb` remained weak for both simple baselines and GRU
 - the simple regression runs were only slightly better than the GRU regression smoke and still had negative test `R²`
@@ -109,6 +109,35 @@ Other takeaways:
 Interpretation:
 - for the current sequence pack and sample size, conservative tabularized temporal baselines are currently stronger diagnostics than the GRU smoke configuration
 - binary loss looks more learnable than next-day weight-delta regression in the present temporal setup
+
+### 4.4 What the bounded neural family comparison showed
+The focused `loss + days,weeks` neural comparison has now been run via:
+- `train_temporal_multires_neural_compare_v1.py`
+
+Reference floor:
+- `simple_loss_daysweeks_v2`
+  - balanced accuracy = `0.8611`
+  - ROC AUC = `0.9167`
+
+Neural comparison results:
+- `gru_loss_daysweeks_compare_smoke_v1_check`
+  - balanced accuracy = `0.5000`
+  - ROC AUC = `0.4722`
+  - `prob_std` = `0.0124`
+- `tcn_loss_daysweeks_compare_smoke_v1_check`
+  - balanced accuracy = `0.5833`
+  - ROC AUC = `0.5000`
+  - `prob_std` = `0.0090`
+- `transformer_loss_daysweeks_compare_smoke_v1_check`
+  - balanced accuracy = `0.5000`
+  - ROC AUC = `nan`
+  - `prob_std` = `nan`
+
+Interpretation:
+- TCN was the least bad new neural family in this bounded comparison, but still far below the conservative simple floor
+- the new GRU compare run did not improve the ranking picture in a meaningful way
+- transformer remained effectively unusable in this smoke setup
+- probability dispersion is still extremely narrow for GRU and TCN, so the old collapse problem remains active
 
 ---
 
@@ -121,9 +150,10 @@ These are hypotheses, not final truths, but they are the best current explanatio
    - simple anchors may currently exploit the data better than the GRU does
 
 2. **Architecture mismatch**
-   - GRU may not be the right inductive bias here
-   - TCN or transformer may still do better
-   - a simpler flattened-sequence MLP or boosted-tree on lagged summaries may also be worth testing
+   - GRU does not appear to be the right inductive bias here
+   - TCN improved slightly over GRU in the bounded comparison, but not enough to change the project state
+   - the current transformer smoke setup is not yet viable
+   - a simpler flattened-sequence MLP or boosted-tree on lagged summaries may still be the stronger near-term class
 
 3. **Weak temporal signal relative to engineered summaries**
    - daily anchors may already compress the useful structure efficiently
@@ -142,8 +172,8 @@ These are hypotheses, not final truths, but they are the best current explanatio
 Use the new simple baseline results as the comparison floor before any further temporal escalation.
 
 Current empirical floor:
-1. `simple_loss_daysweeks_v1`
-2. `simple_loss_days_v1`
+1. `simple_loss_daysweeks_v2`
+2. `simple_loss_days_v2`
 
 Why:
 - these are now the strongest temporal-style results currently recorded in-repo
@@ -154,24 +184,24 @@ Why:
 Choose one path:
 
 #### Path A — continue with temporal ablations
-- run TCN versions of the same smoke tests
-- run transformer versions only after TCN / GRU smoke tests are interpretable
-- compare days-only vs days+weeks systematically
+- if continuing neural work, treat `tcn_loss_daysweeks_compare_smoke_v1_check` as the current neural ceiling and improve from there
+- do not widen scope to meals or regression until a neural run materially improves on the current TCN smoke
+- only revisit transformer after there is a concrete reason the setup failure was optimization-specific rather than signal-limited
 
 #### Path B — simpler sequence baseline
 A conservative non-recurrent baseline path now exists via:
 - `train_temporal_multires_simple_baselines_v2.py`
 
 Current completed runs:
-- `simple_loss_days_v1`
-- `simple_loss_daysweeks_v1`
-- `simple_delta_days_v1`
-- `simple_delta_daysweeks_v1`
+- `simple_loss_days_v2`
+- `simple_loss_daysweeks_v2`
+- `simple_delta_days_v2`
+- `simple_delta_daysweeks_v2`
 
 What they established:
 - keep `days,weeks` as the preferred conservative baseline for `y_next_weight_loss_flag`
 - do not treat `y_next_weight_delta_lb` as the leading temporal target yet
-- any new GRU / TCN / transformer smoke should be compared directly against `simple_loss_daysweeks_v1`
+- any new GRU / TCN / transformer smoke should be compared directly against `simple_loss_daysweeks_v2`
 
 This path is intentionally more data-efficient than the current neural branch and should be checked before any broader temporal escalation.
 
@@ -198,7 +228,7 @@ Only escalate to long real pilots once a smoke-test configuration clears somethi
 - ROC AUC materially above 0.60
 - balanced accuracy above 0.55
 - no one-class collapse
-- probability distribution visibly broader / better ranked than current GRU runs
+- probability distribution visibly broader / better ranked than the current GRU / TCN runs
 
 ### Regression target
 - MAE / RMSE better than the current simple temporal baselines
@@ -228,6 +258,8 @@ Use `train_temporal_multires_neural_compare_v1.py` when the goal is to compare n
 - explicit reference runs:
   - `simple_loss_daysweeks_v2`
   - `gru_loss_daysweeks_smoke_v4_1`
+- latest bounded comparison report:
+  - `reports/backtests/temporal_multires/loss_daysweeks_compare_smoke_v1_check/comparison_report.md`
 
 ### Anchor / reference side
 - daily scoring and historical scorer scripts
