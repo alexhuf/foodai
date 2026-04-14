@@ -765,6 +765,21 @@ For each script, the goal is to answer:
 **Current project role**
 - determine whether any temporal target/modality combination is promising enough to justify longer runs
 
+## `train_temporal_multires_simple_baselines_v1.py`
+**Status:** current conservative temporal baseline trainer  
+**Purpose:** train simple non-recurrent lag-window baselines on the multires sequence pack.
+
+**Key features**
+- flattens recent modality windows into tabular temporal features
+- reuses `anchors.csv` and `split_suggested` from the multires dataset
+- supports days / weeks / meals modality toggles
+- trains dummy / linear / tree baselines for binary and regression targets
+- writes comparable backtest artifacts under `reports/backtests/temporal_multires/<run_name>/`
+
+**Current project role**
+- provide a data-efficient non-neural reference for `y_next_weight_loss_flag` and `y_next_weight_delta_lb`
+- test whether simple lag-window structure is learnable before escalating to more complex temporal architectures
+
 ---
 
 # 14. Repo inventory and documentation support
@@ -810,8 +825,9 @@ If a future developer wants the most relevant current path rather than the full 
 7. multires sequence pack
    - `build_multires_sequence_dataset_v2.py`
 
-8. temporal diagnostics
+8. temporal diagnostics and conservative baselines
    - `train_temporal_multires_models_v4_1.py`
+   - `train_temporal_multires_simple_baselines_v1.py`
 
 ---
 

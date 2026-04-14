@@ -138,12 +138,16 @@ Choose one path:
 - compare days-only vs days+weeks systematically
 
 #### Path B — simpler sequence baseline
-Build a simpler non-recurrent temporal baseline such as:
-- flattened lag-window MLP
-- XGBoost / LightGBM over lagged summaries
-- attention pooling without recurrent state
+A conservative non-recurrent baseline path now exists via:
+- `train_temporal_multires_simple_baselines_v1.py`
 
-This path may be more data-efficient given current anchor count.
+Use it first on:
+- `y_next_weight_loss_flag` with `days`
+- `y_next_weight_loss_flag` with `days,weeks`
+- `y_next_weight_delta_lb` with `days`
+- `y_next_weight_delta_lb` with `days,weeks`
+
+This path is intentionally more data-efficient than the current neural branch and should be checked before any broader temporal escalation.
 
 ---
 
@@ -184,6 +188,7 @@ Only escalate to long real pilots once a smoke-test configuration clears somethi
 
 ### Temporal training side
 - `train_temporal_multires_models_v4_1.py`
+- `train_temporal_multires_simple_baselines_v1.py`
 
 ### Anchor / reference side
 - daily scoring and historical scorer scripts
