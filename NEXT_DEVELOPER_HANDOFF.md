@@ -82,7 +82,7 @@ The v4.1 GRU smoke tests suggest:
 
 - `gain + days only` is poor
 - `gain + days,weeks` is slightly less poor, but still not useful
-- `loss + days,weeks` is the least bad of the tested binary setups so far, but still weak
+- `loss + days,weeks` is the least bad of the tested GRU binary setups so far, but still weak
 
 The common failure mode is:
 - under-dispersed probabilities
@@ -90,6 +90,25 @@ The common failure mode is:
 - effectively one-class prediction behavior
 
 This means the current temporal GRU setup is not learning sharp ranking structure.
+
+### 4.3 What the conservative simple baselines showed
+The non-recurrent lag-window baseline path has now been run.
+
+Most important result:
+- `simple_loss_daysweeks_v1` clearly outperformed the current GRU smoke tests for binary loss prediction
+- test ROC AUC = `0.9167`
+- test balanced accuracy = `0.8611`
+- selected model = extra trees on flattened `days,weeks`
+
+Other takeaways:
+- `simple_loss_days_v1` was also materially stronger than the GRU loss smokes
+- `days,weeks` beat `days` for the binary loss target
+- regression on `y_next_weight_delta_lb` remained weak for both simple baselines and GRU
+- the simple regression runs were only slightly better than the GRU regression smoke and still had negative test `R²`
+
+Interpretation:
+- for the current sequence pack and sample size, conservative tabularized temporal baselines are currently stronger diagnostics than the GRU smoke configuration
+- binary loss looks more learnable than next-day weight-delta regression in the present temporal setup
 
 ---
 
@@ -119,15 +138,17 @@ These are hypotheses, not final truths, but they are the best current explanatio
 
 ## 6. Recommended next steps
 
-### Highest-priority next runs
-Run these next before any long pilot:
+### Highest-priority next work
+Use the new simple baseline results as the comparison floor before any further temporal escalation.
 
-1. `gru_loss_days_smoke_v4_1`
-2. `gru_delta_daysweeks_smoke_v4_1`
+Current empirical floor:
+1. `simple_loss_daysweeks_v1`
+2. `simple_loss_days_v1`
 
 Why:
-- loss has historically been a cleaner target
-- regression may be more learnable than binary direction in temporal form
+- these are now the strongest temporal-style results currently recorded in-repo
+- they show the current GRU branch is underperforming a more conservative baseline on the same dataset
+- they make binary loss the cleanest target for the next architecture comparison
 
 ### After that
 Choose one path:
@@ -141,11 +162,16 @@ Choose one path:
 A conservative non-recurrent baseline path now exists via:
 - `train_temporal_multires_simple_baselines_v1.py`
 
-Use it first on:
-- `y_next_weight_loss_flag` with `days`
-- `y_next_weight_loss_flag` with `days,weeks`
-- `y_next_weight_delta_lb` with `days`
-- `y_next_weight_delta_lb` with `days,weeks`
+Current completed runs:
+- `simple_loss_days_v1`
+- `simple_loss_daysweeks_v1`
+- `simple_delta_days_v1`
+- `simple_delta_daysweeks_v1`
+
+What they established:
+- keep `days,weeks` as the preferred conservative baseline for `y_next_weight_loss_flag`
+- do not treat `y_next_weight_delta_lb` as the leading temporal target yet
+- any new GRU / TCN / transformer smoke should be compared directly against `simple_loss_daysweeks_v1`
 
 This path is intentionally more data-efficient than the current neural branch and should be checked before any broader temporal escalation.
 
@@ -172,8 +198,8 @@ Only escalate to long real pilots once a smoke-test configuration clears somethi
 - probability distribution visibly broader / better ranked than current GRU runs
 
 ### Regression target
-- MAE / RMSE better than current simple temporal baseline
-- nontrivial positive `R²` or at least clear improvement toward zero from current negative values
+- MAE / RMSE better than the current simple temporal baselines
+- improve beyond roughly `0.312` MAE / `0.574` RMSE while moving `R²` materially upward from the current negative range
 
 ### Overall
 - must be worth comparing directly against the daily or weekly anchor baselines
