@@ -1,0 +1,23 @@
+You are working inside the FoodAI repository.
+
+Before making any changes:
+1. Read AGENTS.md
+2. Read CODEX_HANDOFF.md
+3. Read README.md
+4. Read NEXT_DEVELOPER_HANDOFF.md
+5. Read SCRIPT_CATALOG.md
+6. Read PROJECT_HISTORY.md
+7. Inspect docs/repo_inventory/repo_tree.txt and docs/repo_inventory/repo_manifest.json
+
+Then do the following:
+- summarize the current project state
+- identify which findings are trusted
+- identify the current bottleneck
+- inspect the latest temporal multires reports
+- recommend the best next additive step
+
+Constraints:
+- do not delete historical files
+- do not treat broken temporal runs as valid baseline comparisons
+- prefer additive script versions
+- update documentation if project state changes
