@@ -1,0 +1,1886 @@
+foodai/
+├── archive/
+│   ├── _archive_previous_build/
+│   ├── v1/
+│   │   ├── app.py
+│   │   ├── build_brain.py
+│   │   ├── build_v3_brain.py
+│   │   ├── enrich_data.py
+│   │   ├── lstm_weights.pth
+│   │   ├── meta_model.json
+│   │   ├── requirements.txt
+│   │   ├── upgrade_dataset.py
+│   │   ├── V3_Deep_Plate_Dataset.csv
+│   │   ├── v3_memory_engine.pkl
+│   │   └── xgb_base.json
+│   ├── v15/
+│   │   ├── 1_v5_omni_matrix.py
+│   │   ├── 2_v5_transformer.py
+│   │   ├── 3_v8_reward_extraction.py
+│   │   ├── 4_v8_world_model.py
+│   │   ├── 5_v8_dreamer_rl.py
+│   │   ├── android_food_entries.csv
+│   │   ├── app.py
+│   │   ├── readme.md
+│   │   ├── Ultimate_Super_Dataset.csv
+│   │   ├── v15_master_telemetry.csv
+│   │   ├── v5_env_objects.pkl
+│   │   ├── v5_transformer_weights.pth
+│   │   ├── v8_dreamer_checkpoint.pth
+│   │   ├── v8_physics_env.pkl
+│   │   └── v8_world_model_weights.pth
+│   └── v8/
+│       ├── actions.csv
+│       ├── build_v15_master_ledger.py
+│       ├── com.samsung.health.weight.20260411021045.csv
+│       ├── com.samsung.shealth.calories_burned.details.20260411021045.csv
+│       ├── com.samsung.shealth.stress.20260411021045.csv
+│       ├── com.samsung.shealth.tracker.heart_rate.20260411021045.csv
+│       ├── com.samsung.shealth.tracker.pedometer_step_count.20260411021045.csv
+│       ├── daily_calorie_budgets.csv
+│       ├── patch_weight_units.py
+│       ├── trim_master_ledger.py
+│       ├── v15_master_telemetry.csv
+│       ├── v15_master_telemetry_active.csv
+│       └── v5_omni_matrix.csv
+├── audit/
+│   └── regime_representation/
+│       ├── weekends_structure/
+│       │   ├── class_balance.csv
+│       │   ├── classification_audit.csv
+│       │   ├── classification_top_features.csv
+│       │   ├── regression_audit.csv
+│       │   ├── regression_top_features.csv
+│       │   └── split_summary.csv
+│       ├── weeks_structure/
+│       │   ├── regression_audit.csv
+│       │   ├── regression_top_features.csv
+│       │   └── split_summary.csv
+│       ├── summary.json
+│       └── summary.md
+├── canonical/
+│   ├── noom/
+│   │   ├── noom_actions.csv
+│   │   ├── noom_application_opens.csv
+│   │   ├── noom_assignments.csv
+│   │   ├── noom_curriculum_program_state.csv
+│   │   ├── noom_daily_budgets.csv
+│   │   ├── noom_daily_features.csv
+│   │   ├── noom_finish_day.csv
+│   │   ├── noom_food_entries.csv
+│   │   ├── noom_goals.csv
+│   │   ├── noom_meal_events.csv
+│   │   ├── noom_steps_daily.csv
+│   │   ├── noom_user_events.csv
+│   │   ├── noom_water_logs.csv
+│   │   └── noom_weighins.csv
+│   └── samsung/
+│       ├── samsung_activity_daily.csv
+│       ├── samsung_daily_features.csv
+│       ├── samsung_energy_daily.csv
+│       ├── samsung_exercise_sessions.csv
+│       ├── samsung_hr_raw.csv
+│       ├── samsung_oxygen_raw.csv
+│       ├── samsung_pedometer_daily.csv
+│       ├── samsung_sleep_sessions.csv
+│       ├── samsung_sleep_stages.csv
+│       ├── samsung_steps_intraday.csv
+│       ├── samsung_stress_raw.csv
+│       └── samsung_weight_events.csv
+├── docs/
+│   └── repo_inventory/
+├── fused/
+│   ├── master_15min_telemetry_active.csv
+│   ├── master_daily_features.csv
+│   ├── master_daily_features_full.csv
+│   └── master_event_ledger.csv
+├── meal_db/
+│   ├── _archive/
+│   │   ├── 20260411_204526_batch_001/
+│   │   │   ├── canonical_food_entity_seed.csv
+│   │   │   ├── food_alias_seed.csv
+│   │   │   ├── meal_component_seed.csv
+│   │   │   └── meal_event_seed.csv
+│   │   ├── 20260411_205735_batch_001/
+│   │   ├── 20260411_212424_batch_002/
+│   │   │   ├── canonical_food_entity_seed.csv
+│   │   │   ├── food_alias_seed.csv
+│   │   │   ├── meal_component_seed.csv
+│   │   │   └── meal_event_seed.csv
+│   │   ├── 20260411_214751_batch_003/
+│   │   │   ├── canonical_food_entity_seed.csv
+│   │   │   ├── food_alias_seed.csv
+│   │   │   ├── meal_component_seed.csv
+│   │   │   └── meal_event_seed.csv
+│   │   ├── 20260411_221351_batch_004/
+│   │   │   ├── canonical_food_entity_seed.csv
+│   │   │   ├── food_alias_seed.csv
+│   │   │   ├── meal_component_seed.csv
+│   │   │   └── meal_event_seed.csv
+│   │   ├── 20260411_224314_pending_001/
+│   │   │   ├── canonical_food_entity_seed.csv
+│   │   │   ├── food_alias_seed.csv
+│   │   │   ├── meal_component_seed.csv
+│   │   │   └── meal_event_seed.csv
+│   │   ├── 20260411_230944_pending_002/
+│   │   │   ├── canonical_food_entity_seed.csv
+│   │   │   ├── food_alias_seed.csv
+│   │   │   ├── meal_component_seed.csv
+│   │   │   └── meal_event_seed.csv
+│   │   ├── 20260411_234210_pending_003/
+│   │   │   ├── canonical_food_entity_seed.csv
+│   │   │   ├── food_alias_seed.csv
+│   │   │   ├── meal_component_seed.csv
+│   │   │   └── meal_event_seed.csv
+│   │   └── 20260411_235524_pending_004/
+│   │       ├── canonical_food_entity_seed.csv
+│   │       ├── food_alias_seed.csv
+│   │       ├── meal_component_seed.csv
+│   │       └── meal_event_seed.csv
+│   ├── current/
+│   │   ├── apply_manifest_batch_001.json
+│   │   ├── apply_manifest_batch_002.json
+│   │   ├── apply_manifest_batch_003.json
+│   │   ├── apply_manifest_batch_004.json
+│   │   ├── apply_manifest_pending_001.json
+│   │   ├── apply_manifest_pending_002.json
+│   │   ├── apply_manifest_pending_003.json
+│   │   ├── apply_manifest_pending_004.json
+│   │   ├── canonical_food_entity_current.csv
+│   │   ├── food_alias_current.csv
+│   │   ├── meal_component_current.csv
+│   │   └── meal_event_current.csv
+│   ├── final/
+│   │   ├── canonical_food_entity.csv
+│   │   ├── food_entry_semantic_view.csv
+│   │   ├── meal_component_edge.csv
+│   │   ├── meal_db_final_manifest.json
+│   │   └── meal_semantic_features.csv
+│   ├── final_repaired/
+│   │   ├── canonical_food_entity.csv
+│   │   ├── food_entry_semantic_view.csv
+│   │   ├── meal_component_edge.csv
+│   │   ├── meal_db_final_manifest.json
+│   │   └── meal_semantic_features.csv
+│   ├── review_batches/
+│   │   ├── food_alias_batch_001.csv
+│   │   ├── food_alias_batch_001_components.csv
+│   │   ├── food_alias_batch_001_meal_examples.csv
+│   │   └── review_manifest_pending-only.json
+│   ├── reviews/
+│   │   ├── batch_001/
+│   │   │   ├── canonical_food_entity_batch_001_llm.csv
+│   │   │   ├── food_alias_batch_001_components_llm.csv
+│   │   │   ├── food_alias_batch_001_llm_enriched.csv
+│   │   │   └── food_alias_batch_001_meal_examples_llm.csv
+│   │   ├── batch_002/
+│   │   │   ├── canonical_food_entity_batch_002_llm.csv
+│   │   │   ├── food_alias_batch_002_components_llm.csv
+│   │   │   ├── food_alias_batch_002_llm_enriched.csv
+│   │   │   └── food_alias_batch_002_meal_examples_llm.csv
+│   │   ├── batch_003/
+│   │   │   ├── canonical_food_entity_batch_003_llm.csv
+│   │   │   ├── food_alias_batch_003_components_llm.csv
+│   │   │   ├── food_alias_batch_003_llm_enriched.csv
+│   │   │   └── food_alias_batch_003_meal_examples_llm.csv
+│   │   ├── batch_004/
+│   │   │   ├── canonical_food_entity_batch_004_llm.csv
+│   │   │   ├── food_alias_batch_004_components_llm.csv
+│   │   │   ├── food_alias_batch_004_llm_enriched.csv
+│   │   │   └── food_alias_batch_004_meal_examples_llm.csv
+│   │   ├── pending_001/
+│   │   │   ├── canonical_food_entity_batch_001_llm.csv
+│   │   │   ├── food_alias_batch_001_components_llm.csv
+│   │   │   ├── food_alias_batch_001_llm_enriched.csv
+│   │   │   └── food_alias_batch_001_meal_examples_llm.csv
+│   │   ├── pending_002/
+│   │   │   ├── canonical_food_entity_batch_001_llm.csv
+│   │   │   ├── food_alias_batch_001_components_llm.csv
+│   │   │   ├── food_alias_batch_001_llm_enriched.csv
+│   │   │   └── food_alias_batch_001_meal_examples_llm.csv
+│   │   ├── pending_003/
+│   │   │   ├── canonical_food_entity_batch_001_llm.csv
+│   │   │   ├── food_alias_batch_001_components_llm.csv
+│   │   │   ├── food_alias_batch_001_llm_enriched.csv
+│   │   │   └── food_alias_batch_001_meal_examples_llm.csv
+│   │   └── pending_004/
+│   │       ├── canonical_food_entity_batch_001_llm.csv
+│   │       ├── food_alias_batch_001_components_llm.csv
+│   │       ├── food_alias_batch_001_llm_enriched.csv
+│   │       └── food_alias_batch_001_meal_examples_llm.csv
+│   ├── seed/
+│   │   ├── canonical_food_entity_seed.csv
+│   │   ├── food_alias_seed.csv
+│   │   ├── meal_component_seed.csv
+│   │   ├── meal_event_seed.csv
+│   │   ├── raw_food_entry_enriched_seed.csv
+│   │   └── seed_manifest.json
+│   └── README_seed_outputs.txt
+├── models/
+│   ├── baselines/
+│   │   └── meal/
+│   │       ├── y_next_meal_archetype_collapsed/
+│   │       │   ├── best_model.joblib
+│   │       │   └── summary.json
+│   │       ├── y_next_meal_family_coarse/
+│   │       │   ├── best_model.joblib
+│   │       │   └── summary.json
+│   │       ├── y_next_meal_kcal_log1p/
+│   │       │   ├── best_model.joblib
+│   │       │   └── summary.json
+│   │       ├── y_next_restaurant_meal/
+│   │       │   ├── best_model.joblib
+│   │       │   └── summary.json
+│   │       ├── y_post_meal_budget_breach/
+│   │       │   ├── best_model.joblib
+│   │       │   └── summary.json
+│   │       └── run_manifest.json
+│   ├── daily_transition/
+│   │   ├── y_delta_next_budget_minus_logged_food_kcal_day/
+│   │   │   └── rf.joblib
+│   │   ├── y_delta_next_exercise_calories_day/
+│   │   ├── y_delta_next_logged_food_kcal_day/
+│   │   │   └── rf.joblib
+│   │   ├── y_delta_next_meal_event_count_day/
+│   │   │   └── dummy_mean.joblib
+│   │   ├── y_delta_next_restaurant_meal_count_day/
+│   │   │   └── rf.joblib
+│   │   ├── y_delta_next_restaurant_meal_fraction_day/
+│   │   │   └── rf.joblib
+│   │   ├── y_delta_next_samsung_sleep_duration_hours_day/
+│   │   ├── y_delta_next_samsung_sleep_score_day/
+│   │   ├── y_delta_next_steps_day/
+│   │   │   └── dummy_mean.joblib
+│   │   ├── y_delta_next_true_weight_lb/
+│   │   │   └── rf.joblib
+│   │   ├── y_next_budget_breach_flag/
+│   │   │   └── dummy_majority.joblib
+│   │   ├── y_next_budget_minus_logged_food_kcal_day/
+│   │   │   └── et.joblib
+│   │   ├── y_next_dominant_cuisine_day/
+│   │   │   └── dummy_majority.joblib
+│   │   ├── y_next_dominant_energy_density_day/
+│   │   │   └── logreg.joblib
+│   │   ├── y_next_dominant_meal_archetype_day/
+│   │   │   └── dummy_majority.joblib
+│   │   ├── y_next_dominant_prep_profile_day/
+│   │   │   └── dummy_majority.joblib
+│   │   ├── y_next_dominant_principal_protein_day/
+│   │   │   └── rf.joblib
+│   │   ├── y_next_dominant_principal_starch_day/
+│   │   │   └── logreg.joblib
+│   │   ├── y_next_dominant_satiety_style_day/
+│   │   │   └── logreg.joblib
+│   │   ├── y_next_dominant_service_form_day/
+│   │   │   └── dummy_majority.joblib
+│   │   ├── y_next_exercise_calories_day/
+│   │   ├── y_next_high_kcal_flag/
+│   │   │   └── dummy_majority.joblib
+│   │   ├── y_next_high_meal_frequency_flag/
+│   │   │   └── et.joblib
+│   │   ├── y_next_logged_food_kcal_day/
+│   │   │   └── dummy_mean.joblib
+│   │   ├── y_next_meal_event_count_day/
+│   │   │   └── rf.joblib
+│   │   ├── y_next_restaurant_heavy_flag/
+│   │   │   └── rf.joblib
+│   │   ├── y_next_restaurant_meal_count_day/
+│   │   │   └── rf.joblib
+│   │   ├── y_next_restaurant_meal_fraction_day/
+│   │   │   └── et.joblib
+│   │   ├── y_next_samsung_sleep_duration_hours_day/
+│   │   ├── y_next_samsung_sleep_score_day/
+│   │   ├── y_next_steps_day/
+│   │   │   └── dummy_mean.joblib
+│   │   ├── y_next_true_weight_lb/
+│   │   │   └── ridge.joblib
+│   │   ├── y_next_weight_delta_lb/
+│   │   │   └── rf.joblib
+│   │   ├── y_next_weight_gain_flag/
+│   │   │   └── et.joblib
+│   │   ├── y_next_weight_loss_flag/
+│   │   │   └── et.joblib
+│   │   ├── y_same_dominant_cuisine_day/
+│   │   │   └── et.joblib
+│   │   ├── y_same_dominant_energy_density_day/
+│   │   │   └── rf.joblib
+│   │   ├── y_same_dominant_meal_archetype_day/
+│   │   │   └── et.joblib
+│   │   ├── y_same_dominant_prep_profile_day/
+│   │   │   └── et.joblib
+│   │   ├── y_same_dominant_principal_protein_day/
+│   │   │   └── dummy_majority.joblib
+│   │   ├── y_same_dominant_principal_starch_day/
+│   │   │   └── dummy_majority.joblib
+│   │   ├── y_same_dominant_satiety_style_day/
+│   │   │   └── dummy_majority.joblib
+│   │   └── y_same_dominant_service_form_day/
+│   │       └── et.joblib
+│   ├── regime_transition/
+│   │   ├── weekends/
+│   │   │   ├── y_delta_next_budget_minus_logged_food_kcal_weekend/
+│   │   │   │   └── rf.joblib
+│   │   │   ├── y_delta_next_meal_events_per_day_weekend/
+│   │   │   │   └── et.joblib
+│   │   │   ├── y_delta_next_restaurant_meal_fraction_weekend/
+│   │   │   │   └── et.joblib
+│   │   │   ├── y_delta_next_weight_delta_lb/
+│   │   │   │   └── dummy_mean.joblib
+│   │   │   ├── y_next_budget_breach_flag/
+│   │   │   │   └── dummy_majority.joblib
+│   │   │   ├── y_next_budget_minus_logged_food_kcal_weekend/
+│   │   │   │   └── et.joblib
+│   │   │   ├── y_next_dominant_cuisine_weekend/
+│   │   │   │   └── dummy_majority.joblib
+│   │   │   ├── y_next_dominant_energy_density_weekend/
+│   │   │   │   └── dummy_majority.joblib
+│   │   │   ├── y_next_dominant_meal_archetype_weekend/
+│   │   │   ├── y_next_dominant_prep_profile_weekend/
+│   │   │   │   └── dummy_majority.joblib
+│   │   │   ├── y_next_dominant_protein_weekend/
+│   │   │   │   └── logreg.joblib
+│   │   │   ├── y_next_dominant_satiety_style_weekend/
+│   │   │   │   └── logreg.joblib
+│   │   │   ├── y_next_dominant_service_form_weekend/
+│   │   │   │   └── dummy_majority.joblib
+│   │   │   ├── y_next_dominant_starch_weekend/
+│   │   │   │   └── dummy_majority.joblib
+│   │   │   ├── y_next_high_meal_frequency_flag/
+│   │   │   │   └── dummy_majority.joblib
+│   │   │   ├── y_next_meal_events_per_day_weekend/
+│   │   │   │   └── dummy_mean.joblib
+│   │   │   ├── y_next_restaurant_heavy_flag/
+│   │   │   │   └── rf.joblib
+│   │   │   ├── y_next_restaurant_meal_fraction_weekend/
+│   │   │   │   └── dummy_mean.joblib
+│   │   │   ├── y_next_weight_delta_lb/
+│   │   │   │   └── dummy_mean.joblib
+│   │   │   ├── y_next_weight_gain_flag/
+│   │   │   │   └── dummy_majority.joblib
+│   │   │   ├── y_next_weight_loss_flag/
+│   │   │   │   └── dummy_majority.joblib
+│   │   │   ├── y_same_dominant_cuisine_weekend/
+│   │   │   │   └── dummy_majority.joblib
+│   │   │   ├── y_same_dominant_energy_density_weekend/
+│   │   │   │   └── dummy_majority.joblib
+│   │   │   ├── y_same_dominant_meal_archetype_weekend/
+│   │   │   ├── y_same_dominant_prep_profile_weekend/
+│   │   │   │   └── dummy_majority.joblib
+│   │   │   ├── y_same_dominant_protein_weekend/
+│   │   │   │   └── dummy_majority.joblib
+│   │   │   ├── y_same_dominant_satiety_style_weekend/
+│   │   │   │   └── dummy_majority.joblib
+│   │   │   ├── y_same_dominant_service_form_weekend/
+│   │   │   │   └── dummy_majority.joblib
+│   │   │   └── y_same_dominant_starch_weekend/
+│   │   │       └── dummy_majority.joblib
+│   │   └── weeks/
+│   │       ├── y_delta_next_budget_minus_logged_food_kcal_week/
+│   │       │   └── et.joblib
+│   │       ├── y_delta_next_meal_events_per_day_week/
+│   │       │   └── dummy_mean.joblib
+│   │       ├── y_delta_next_restaurant_meal_fraction_week/
+│   │       │   └── et.joblib
+│   │       ├── y_delta_next_weight_delta_lb/
+│   │       │   └── rf.joblib
+│   │       ├── y_next_budget_breach_flag/
+│   │       │   └── dummy_majority.joblib
+│   │       ├── y_next_budget_minus_logged_food_kcal_week/
+│   │       │   └── et.joblib
+│   │       ├── y_next_dominant_cuisine_week/
+│   │       ├── y_next_dominant_energy_density_week/
+│   │       │   └── logreg.joblib
+│   │       ├── y_next_dominant_meal_archetype_week/
+│   │       ├── y_next_dominant_prep_profile_week/
+│   │       │   └── dummy_majority.joblib
+│   │       ├── y_next_dominant_protein_week/
+│   │       │   └── dummy_majority.joblib
+│   │       ├── y_next_dominant_satiety_style_week/
+│   │       │   └── logreg.joblib
+│   │       ├── y_next_dominant_service_form_week/
+│   │       │   └── dummy_majority.joblib
+│   │       ├── y_next_dominant_starch_week/
+│   │       │   └── rf.joblib
+│   │       ├── y_next_high_meal_frequency_flag/
+│   │       │   └── dummy_majority.joblib
+│   │       ├── y_next_meal_events_per_day_week/
+│   │       │   └── dummy_mean.joblib
+│   │       ├── y_next_restaurant_heavy_flag/
+│   │       │   └── et.joblib
+│   │       ├── y_next_restaurant_meal_fraction_week/
+│   │       │   └── et.joblib
+│   │       ├── y_next_weight_delta_lb/
+│   │       │   └── et.joblib
+│   │       ├── y_next_weight_gain_flag/
+│   │       │   └── logreg.joblib
+│   │       ├── y_next_weight_loss_flag/
+│   │       │   └── et.joblib
+│   │       ├── y_same_dominant_cuisine_week/
+│   │       ├── y_same_dominant_energy_density_week/
+│   │       │   └── et.joblib
+│   │       ├── y_same_dominant_meal_archetype_week/
+│   │       ├── y_same_dominant_prep_profile_week/
+│   │       │   └── dummy_majority.joblib
+│   │       ├── y_same_dominant_protein_week/
+│   │       │   └── dummy_majority.joblib
+│   │       ├── y_same_dominant_satiety_style_week/
+│   │       │   └── dummy_majority.joblib
+│   │       ├── y_same_dominant_service_form_week/
+│   │       │   └── dummy_majority.joblib
+│   │       └── y_same_dominant_starch_week/
+│   │           └── dummy_majority.joblib
+│   ├── representation/
+│   │   ├── meal_state_context/
+│   │   │   ├── best.pt
+│   │   │   ├── config.json
+│   │   │   ├── embeddings_latent.csv
+│   │   │   ├── history.csv
+│   │   │   ├── label_meta.json
+│   │   │   ├── latest.pt
+│   │   │   └── test_metrics.json
+│   │   └── meal_target_semantics/
+│   │       ├── best.pt
+│   │       ├── config.json
+│   │       ├── embeddings_latent.csv
+│   │       ├── history.csv
+│   │       ├── label_meta.json
+│   │       ├── latest.pt
+│   │       └── test_metrics.json
+│   ├── representation_v2/
+│   │   ├── meal_state_context/
+│   │   │   ├── best.pt
+│   │   │   ├── config.json
+│   │   │   ├── embeddings_latent.csv
+│   │   │   ├── history.csv
+│   │   │   ├── label_meta.json
+│   │   │   ├── latest.pt
+│   │   │   └── test_metrics.json
+│   │   └── meal_target_semantics/
+│   │       ├── best.pt
+│   │       ├── config.json
+│   │       ├── embeddings_latent.csv
+│   │       ├── history.csv
+│   │       ├── latest.pt
+│   │       └── test_metrics.json
+│   ├── representation_v3/
+│   │   ├── weekends_structure/
+│   │   │   ├── best.pt
+│   │   │   ├── config.json
+│   │   │   ├── embeddings_latent.csv
+│   │   │   ├── history.csv
+│   │   │   ├── label_meta.json
+│   │   │   ├── latest.pt
+│   │   │   └── test_metrics.json
+│   │   └── weeks_structure/
+│   │       ├── best.pt
+│   │       ├── config.json
+│   │       ├── embeddings_latent.csv
+│   │       ├── history.csv
+│   │       ├── latest.pt
+│   │       └── test_metrics.json
+│   ├── representation_v3_1/
+│   │   ├── weekends_structure/
+│   │   │   ├── best.pt
+│   │   │   ├── config.json
+│   │   │   ├── embeddings_latent.csv
+│   │   │   ├── history.csv
+│   │   │   ├── label_meta.json
+│   │   │   ├── latest.pt
+│   │   │   └── test_metrics.json
+│   │   └── weeks_structure/
+│   │       ├── best.pt
+│   │       ├── config.json
+│   │       ├── embeddings_latent.csv
+│   │       ├── history.csv
+│   │       ├── latest.pt
+│   │       └── test_metrics.json
+│   ├── representation_v3_2/
+│   │   └── weeks_structure/
+│   ├── representation_v3_2_1/
+│   │   ├── weekends_structure/
+│   │   │   ├── best.pt
+│   │   │   ├── config.json
+│   │   │   ├── embeddings_latent.csv
+│   │   │   ├── history.csv
+│   │   │   ├── label_meta.json
+│   │   │   ├── latest.pt
+│   │   │   └── test_metrics.json
+│   │   └── weeks_structure/
+│   │       ├── best.pt
+│   │       ├── config.json
+│   │       ├── embeddings_latent.csv
+│   │       ├── history.csv
+│   │       ├── latest.pt
+│   │       └── test_metrics.json
+│   ├── retrieval/
+│   │   ├── days/
+│   │   │   ├── embeddings.csv
+│   │   │   ├── index_rows.csv
+│   │   │   ├── manifest.json
+│   │   │   ├── nearest_neighbors.joblib
+│   │   │   ├── neighbors_topk.csv
+│   │   │   ├── preprocessor.joblib
+│   │   │   └── svd.joblib
+│   │   ├── meal_states/
+│   │   │   ├── embeddings.csv
+│   │   │   ├── index_rows.csv
+│   │   │   ├── manifest.json
+│   │   │   ├── nearest_neighbors.joblib
+│   │   │   ├── neighbors_topk.csv
+│   │   │   ├── preprocessor.joblib
+│   │   │   └── svd.joblib
+│   │   ├── weekends/
+│   │   │   ├── embeddings.csv
+│   │   │   ├── index_rows.csv
+│   │   │   ├── manifest.json
+│   │   │   ├── nearest_neighbors.joblib
+│   │   │   ├── neighbors_topk.csv
+│   │   │   └── preprocessor.joblib
+│   │   └── weeks/
+│   │       ├── embeddings.csv
+│   │       ├── index_rows.csv
+│   │       ├── manifest.json
+│   │       ├── nearest_neighbors.joblib
+│   │       ├── neighbors_topk.csv
+│   │       └── preprocessor.joblib
+│   ├── retrieval_v2/
+│   │   ├── days_curated/
+│   │   │   ├── embeddings.csv
+│   │   │   ├── index_rows.csv
+│   │   │   ├── manifest.json
+│   │   │   ├── nearest_neighbors.joblib
+│   │   │   ├── neighbors_topk.csv
+│   │   │   ├── preprocessor.joblib
+│   │   │   └── svd.joblib
+│   │   ├── meal_state_context/
+│   │   │   ├── embeddings.csv
+│   │   │   ├── index_rows.csv
+│   │   │   ├── manifest.json
+│   │   │   ├── nearest_neighbors.joblib
+│   │   │   ├── neighbors_topk.csv
+│   │   │   ├── preprocessor.joblib
+│   │   │   └── svd.joblib
+│   │   ├── meal_target_semantics/
+│   │   │   ├── embeddings.csv
+│   │   │   ├── index_rows.csv
+│   │   │   ├── manifest.json
+│   │   │   ├── nearest_neighbors.joblib
+│   │   │   ├── neighbors_topk.csv
+│   │   │   ├── preprocessor.joblib
+│   │   │   └── svd.joblib
+│   │   ├── weekends_curated/
+│   │   │   ├── embeddings.csv
+│   │   │   ├── index_rows.csv
+│   │   │   ├── manifest.json
+│   │   │   ├── nearest_neighbors.joblib
+│   │   │   ├── neighbors_topk.csv
+│   │   │   └── preprocessor.joblib
+│   │   └── weeks_curated/
+│   │       ├── embeddings.csv
+│   │       ├── index_rows.csv
+│   │       ├── manifest.json
+│   │       ├── nearest_neighbors.joblib
+│   │       ├── neighbors_topk.csv
+│   │       └── preprocessor.joblib
+│   ├── retrieval_v3/
+│   │   ├── days_curated/
+│   │   │   ├── embeddings.csv
+│   │   │   ├── index_rows.csv
+│   │   │   ├── manifest.json
+│   │   │   ├── nearest_neighbors.joblib
+│   │   │   ├── neighbors_topk.csv
+│   │   │   ├── preprocessor.joblib
+│   │   │   └── svd.joblib
+│   │   ├── meal_state_context/
+│   │   │   ├── embeddings.csv
+│   │   │   ├── index_rows.csv
+│   │   │   ├── manifest.json
+│   │   │   ├── nearest_neighbors.joblib
+│   │   │   ├── neighbors_topk.csv
+│   │   │   ├── preprocessor.joblib
+│   │   │   └── svd.joblib
+│   │   ├── meal_target_semantics/
+│   │   │   ├── embeddings.csv
+│   │   │   ├── index_rows.csv
+│   │   │   ├── manifest.json
+│   │   │   ├── nearest_neighbors.joblib
+│   │   │   ├── neighbors_topk.csv
+│   │   │   ├── preprocessor.joblib
+│   │   │   └── svd.joblib
+│   │   ├── weekends_structure/
+│   │   │   ├── embeddings.csv
+│   │   │   ├── index_rows.csv
+│   │   │   ├── manifest.json
+│   │   │   ├── nearest_neighbors.joblib
+│   │   │   ├── neighbors_topk.csv
+│   │   │   ├── preprocessor.joblib
+│   │   │   └── svd.joblib
+│   │   └── weeks_structure/
+│   │       ├── embeddings.csv
+│   │       ├── index_rows.csv
+│   │       ├── manifest.json
+│   │       ├── nearest_neighbors.joblib
+│   │       ├── neighbors_topk.csv
+│   │       ├── preprocessor.joblib
+│   │       └── svd.joblib
+│   ├── temporal_multires/
+│   │   ├── gru_delta_daysweeks_smoke_v4_1/
+│   │   │   ├── best_checkpoint.pt
+│   │   │   ├── best_model_state.pt
+│   │   │   └── last_checkpoint.pt
+│   │   ├── gru_gain_days_smoke_v4_1/
+│   │   │   ├── best_checkpoint.pt
+│   │   │   ├── best_model_state.pt
+│   │   │   └── last_checkpoint.pt
+│   │   ├── gru_gain_daysweeks_smoke_v4_1/
+│   │   │   ├── best_checkpoint.pt
+│   │   │   ├── best_model_state.pt
+│   │   │   └── last_checkpoint.pt
+│   │   ├── gru_loss_days_smoke_v4_1/
+│   │   │   ├── best_checkpoint.pt
+│   │   │   ├── best_model_state.pt
+│   │   │   └── last_checkpoint.pt
+│   │   ├── gru_loss_daysweeks_smoke_v4_1/
+│   │   │   ├── best_checkpoint.pt
+│   │   │   ├── best_model_state.pt
+│   │   │   └── last_checkpoint.pt
+│   │   ├── gru_pilot/
+│   │   │   ├── best_checkpoint.pt
+│   │   │   ├── best_model_state.pt
+│   │   │   └── last_checkpoint.pt
+│   │   ├── gru_pilot_v3/
+│   │   │   ├── best_checkpoint.pt
+│   │   │   ├── best_model_state.pt
+│   │   │   └── last_checkpoint.pt
+│   │   ├── gru_smoke/
+│   │   │   ├── best_checkpoint.pt
+│   │   │   ├── best_model_state.pt
+│   │   │   └── last_checkpoint.pt
+│   │   ├── gru_smoke_v3/
+│   │   │   ├── best_checkpoint.pt
+│   │   │   ├── best_model_state.pt
+│   │   │   └── last_checkpoint.pt
+│   │   └── tcn_smoke_v3/
+│   │       ├── best_checkpoint.pt
+│   │       ├── best_model_state.pt
+│   │       └── last_checkpoint.pt
+│   └── weekly_weight_gain_refined/
+│       └── logreg_refined.joblib
+├── noom/
+│   ├── actions.csv
+│   ├── android_food_entries.csv
+│   ├── application_opens.csv
+│   ├── assignments.csv
+│   ├── curriculumProgramState.csv
+│   ├── daily_calorie_budgets.csv
+│   ├── finish_day.csv
+│   ├── goals.csv
+│   ├── goalsApiState.csv
+│   ├── user_events.csv
+│   └── user_model.csv
+├── reports/
+│   ├── analysis/
+│   │   ├── daily_weight_direction/
+│   │   │   ├── y_next_weight_gain_flag/
+│   │   │   │   ├── ablation_summary.csv
+│   │   │   │   ├── analysis_summary.json
+│   │   │   │   ├── calibration_bins_compare.csv
+│   │   │   │   ├── calibration_compare.csv
+│   │   │   │   ├── feature_driver_summary.csv
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── scored_test_predictions.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   ├── test_summary.json
+│   │   │   │   ├── threshold_scan_balanced_accuracy.csv
+│   │   │   │   └── threshold_scan_macro_f1.csv
+│   │   │   ├── y_next_weight_loss_flag/
+│   │   │   │   ├── ablation_summary.csv
+│   │   │   │   ├── analysis_summary.json
+│   │   │   │   ├── calibration_bins_compare.csv
+│   │   │   │   ├── calibration_compare.csv
+│   │   │   │   ├── feature_driver_summary.csv
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── scored_test_predictions.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   ├── test_summary.json
+│   │   │   │   ├── threshold_scan_balanced_accuracy.csv
+│   │   │   │   └── threshold_scan_macro_f1.csv
+│   │   │   ├── overall_report.md
+│   │   │   ├── overall_summary.csv
+│   │   │   └── overall_summary.json
+│   │   ├── daily_weight_direction_v2/
+│   │   │   ├── y_next_weight_gain_flag/
+│   │   │   │   ├── ablation_summary.csv
+│   │   │   │   ├── analysis_summary.json
+│   │   │   │   ├── calibration_bins_compare.csv
+│   │   │   │   ├── calibration_compare.csv
+│   │   │   │   ├── clean_pipeline_test_predictions.csv
+│   │   │   │   ├── feature_driver_summary.csv
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── saved_model_test_predictions_scored.csv
+│   │   │   │   ├── threshold_scan_isotonic_balanced_accuracy.csv
+│   │   │   │   ├── threshold_scan_isotonic_macro_f1.csv
+│   │   │   │   ├── threshold_scan_platt_balanced_accuracy.csv
+│   │   │   │   ├── threshold_scan_platt_macro_f1.csv
+│   │   │   │   ├── threshold_scan_raw_balanced_accuracy.csv
+│   │   │   │   ├── threshold_scan_raw_macro_f1.csv
+│   │   │   │   ├── trainer_meta.json
+│   │   │   │   ├── trainer_test_predictions.csv
+│   │   │   │   └── trainer_test_summary.json
+│   │   │   ├── y_next_weight_loss_flag/
+│   │   │   │   ├── ablation_summary.csv
+│   │   │   │   ├── analysis_summary.json
+│   │   │   │   ├── calibration_bins_compare.csv
+│   │   │   │   ├── calibration_compare.csv
+│   │   │   │   ├── clean_pipeline_test_predictions.csv
+│   │   │   │   ├── feature_driver_summary.csv
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── saved_model_test_predictions_scored.csv
+│   │   │   │   ├── threshold_scan_isotonic_balanced_accuracy.csv
+│   │   │   │   ├── threshold_scan_isotonic_macro_f1.csv
+│   │   │   │   ├── threshold_scan_platt_balanced_accuracy.csv
+│   │   │   │   ├── threshold_scan_platt_macro_f1.csv
+│   │   │   │   ├── threshold_scan_raw_balanced_accuracy.csv
+│   │   │   │   ├── threshold_scan_raw_macro_f1.csv
+│   │   │   │   ├── trainer_meta.json
+│   │   │   │   ├── trainer_test_predictions.csv
+│   │   │   │   └── trainer_test_summary.json
+│   │   │   ├── overall_report.md
+│   │   │   ├── overall_summary.csv
+│   │   │   └── overall_summary.json
+│   │   ├── weekly_weight_gain_calibration/
+│   │   │   ├── logreg_fixed/
+│   │   │   │   ├── fold_01/
+│   │   │   │   │   └── model_selection.csv
+│   │   │   │   ├── fold_02/
+│   │   │   │   │   └── model_selection.csv
+│   │   │   │   ├── all_test_predictions_overlapping.csv
+│   │   │   │   ├── calibration_bins_compare.csv
+│   │   │   │   ├── calibration_summary.json
+│   │   │   │   ├── canonical_test_predictions.csv
+│   │   │   │   ├── canonical_test_predictions_calibrated.csv
+│   │   │   │   ├── duplicate_predictions.csv
+│   │   │   │   ├── fold_summary.csv
+│   │   │   │   ├── isotonic_calibrator.joblib
+│   │   │   │   ├── platt_calibrator.joblib
+│   │   │   │   ├── threshold_scan_isotonic_balanced_accuracy.csv
+│   │   │   │   ├── threshold_scan_isotonic_macro_f1.csv
+│   │   │   │   ├── threshold_scan_platt_balanced_accuracy.csv
+│   │   │   │   ├── threshold_scan_platt_macro_f1.csv
+│   │   │   │   ├── threshold_scan_raw_balanced_accuracy.csv
+│   │   │   │   └── threshold_scan_raw_macro_f1.csv
+│   │   │   ├── selected_best/
+│   │   │   │   ├── fold_01/
+│   │   │   │   │   └── model_selection.csv
+│   │   │   │   ├── fold_02/
+│   │   │   │   │   └── model_selection.csv
+│   │   │   │   ├── all_test_predictions_overlapping.csv
+│   │   │   │   ├── calibration_bins_compare.csv
+│   │   │   │   ├── calibration_summary.json
+│   │   │   │   ├── canonical_test_predictions.csv
+│   │   │   │   ├── canonical_test_predictions_calibrated.csv
+│   │   │   │   ├── duplicate_predictions.csv
+│   │   │   │   ├── fold_summary.csv
+│   │   │   │   ├── isotonic_calibrator.joblib
+│   │   │   │   ├── platt_calibrator.joblib
+│   │   │   │   ├── threshold_scan_isotonic_balanced_accuracy.csv
+│   │   │   │   ├── threshold_scan_isotonic_macro_f1.csv
+│   │   │   │   ├── threshold_scan_platt_balanced_accuracy.csv
+│   │   │   │   ├── threshold_scan_platt_macro_f1.csv
+│   │   │   │   ├── threshold_scan_raw_balanced_accuracy.csv
+│   │   │   │   └── threshold_scan_raw_macro_f1.csv
+│   │   │   ├── overall_report.md
+│   │   │   ├── overall_summary.csv
+│   │   │   └── overall_summary.json
+│   │   └── weekly_weight_gain_focus/
+│   │       ├── fold_01/
+│   │       │   ├── ablation_results.csv
+│   │       │   ├── calibration_bins_test.csv
+│   │       │   ├── logreg_feature_drivers.csv
+│   │       │   ├── model_selection.csv
+│   │       │   ├── test_predictions_scored.csv
+│   │       │   ├── threshold_scan_balanced_accuracy.csv
+│   │       │   └── threshold_scan_macro_f1.csv
+│   │       ├── fold_02/
+│   │       │   ├── ablation_results.csv
+│   │       │   ├── calibration_bins_test.csv
+│   │       │   ├── logreg_feature_drivers.csv
+│   │       │   ├── model_selection.csv
+│   │       │   ├── test_predictions_scored.csv
+│   │       │   ├── threshold_scan_balanced_accuracy.csv
+│   │       │   └── threshold_scan_macro_f1.csv
+│   │       ├── fold_03/
+│   │       │   ├── ablation_results.csv
+│   │       │   ├── calibration_bins_test.csv
+│   │       │   ├── logreg_feature_drivers.csv
+│   │       │   ├── model_selection.csv
+│   │       │   ├── test_predictions_scored.csv
+│   │       │   ├── threshold_scan_balanced_accuracy.csv
+│   │       │   └── threshold_scan_macro_f1.csv
+│   │       ├── fold_04/
+│   │       │   ├── ablation_results.csv
+│   │       │   ├── calibration_bins_test.csv
+│   │       │   ├── logreg_feature_drivers.csv
+│   │       │   ├── model_selection.csv
+│   │       │   ├── test_predictions_scored.csv
+│   │       │   ├── threshold_scan_balanced_accuracy.csv
+│   │       │   └── threshold_scan_macro_f1.csv
+│   │       ├── fold_05/
+│   │       │   ├── ablation_results.csv
+│   │       │   ├── calibration_bins_test.csv
+│   │       │   ├── logreg_feature_drivers.csv
+│   │       │   ├── model_selection.csv
+│   │       │   ├── test_predictions_scored.csv
+│   │       │   ├── threshold_scan_balanced_accuracy.csv
+│   │       │   └── threshold_scan_macro_f1.csv
+│   │       ├── ablation_by_fold.csv
+│   │       ├── ablation_summary.csv
+│   │       ├── feature_group_manifest.csv
+│   │       ├── fold_diagnostics.csv
+│   │       ├── overall_report.md
+│   │       ├── overall_summary.csv
+│   │       └── overall_summary.json
+│   ├── backtests/
+│   │   ├── daily_transition/
+│   │   │   ├── y_delta_next_budget_minus_logged_food_kcal_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_delta_next_exercise_calories_day/
+│   │   │   │   └── meta.json
+│   │   │   ├── y_delta_next_logged_food_kcal_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_delta_next_meal_event_count_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_delta_next_restaurant_meal_count_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_delta_next_restaurant_meal_fraction_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_delta_next_samsung_sleep_duration_hours_day/
+│   │   │   │   └── meta.json
+│   │   │   ├── y_delta_next_samsung_sleep_score_day/
+│   │   │   │   └── meta.json
+│   │   │   ├── y_delta_next_steps_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_delta_next_true_weight_lb/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_budget_breach_flag/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_budget_minus_logged_food_kcal_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_dominant_cuisine_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_dominant_energy_density_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_dominant_meal_archetype_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_dominant_prep_profile_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_dominant_principal_protein_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_dominant_principal_starch_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_dominant_satiety_style_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_dominant_service_form_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_exercise_calories_day/
+│   │   │   │   └── meta.json
+│   │   │   ├── y_next_high_kcal_flag/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_high_meal_frequency_flag/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_logged_food_kcal_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_meal_event_count_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_restaurant_heavy_flag/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_restaurant_meal_count_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_restaurant_meal_fraction_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_samsung_sleep_duration_hours_day/
+│   │   │   │   └── meta.json
+│   │   │   ├── y_next_samsung_sleep_score_day/
+│   │   │   │   └── meta.json
+│   │   │   ├── y_next_steps_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_true_weight_lb/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_weight_delta_lb/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_weight_gain_flag/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_next_weight_loss_flag/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_same_dominant_cuisine_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_same_dominant_energy_density_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_same_dominant_meal_archetype_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_same_dominant_prep_profile_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_same_dominant_principal_protein_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_same_dominant_principal_starch_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_same_dominant_satiety_style_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── y_same_dominant_service_form_day/
+│   │   │   │   ├── meta.json
+│   │   │   │   ├── model_comparison.csv
+│   │   │   │   ├── test_predictions.csv
+│   │   │   │   └── test_summary.json
+│   │   │   ├── overall_summary.csv
+│   │   │   └── overall_summary.json
+│   │   ├── meal/
+│   │   │   ├── y_next_meal_archetype_collapsed_fold_metrics.csv
+│   │   │   ├── y_next_meal_archetype_collapsed_test_predictions.csv
+│   │   │   ├── y_next_meal_family_coarse_fold_metrics.csv
+│   │   │   ├── y_next_meal_family_coarse_test_predictions.csv
+│   │   │   ├── y_next_meal_kcal_log1p_fold_metrics.csv
+│   │   │   ├── y_next_meal_kcal_log1p_test_predictions.csv
+│   │   │   ├── y_next_restaurant_meal_fold_metrics.csv
+│   │   │   ├── y_next_restaurant_meal_test_predictions.csv
+│   │   │   ├── y_post_meal_budget_breach_fold_metrics.csv
+│   │   │   └── y_post_meal_budget_breach_test_predictions.csv
+│   │   ├── regime_transition/
+│   │   │   ├── weekends/
+│   │   │   │   ├── y_delta_next_budget_minus_logged_food_kcal_weekend/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_delta_next_meal_events_per_day_weekend/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_delta_next_restaurant_meal_fraction_weekend/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_delta_next_weight_delta_lb/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_budget_breach_flag/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_budget_minus_logged_food_kcal_weekend/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_dominant_cuisine_weekend/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_dominant_energy_density_weekend/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_dominant_meal_archetype_weekend/
+│   │   │   │   │   └── meta.json
+│   │   │   │   ├── y_next_dominant_prep_profile_weekend/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_dominant_protein_weekend/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_dominant_satiety_style_weekend/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_dominant_service_form_weekend/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_dominant_starch_weekend/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_high_meal_frequency_flag/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_meal_events_per_day_weekend/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_restaurant_heavy_flag/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_restaurant_meal_fraction_weekend/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_weight_delta_lb/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_weight_gain_flag/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_weight_loss_flag/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_same_dominant_cuisine_weekend/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_same_dominant_energy_density_weekend/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_same_dominant_meal_archetype_weekend/
+│   │   │   │   │   └── meta.json
+│   │   │   │   ├── y_same_dominant_prep_profile_weekend/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_same_dominant_protein_weekend/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_same_dominant_satiety_style_weekend/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_same_dominant_service_form_weekend/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   └── y_same_dominant_starch_weekend/
+│   │   │   │       ├── meta.json
+│   │   │   │       ├── model_comparison.csv
+│   │   │   │       ├── test_predictions.csv
+│   │   │   │       └── test_summary.json
+│   │   │   ├── weeks/
+│   │   │   │   ├── y_delta_next_budget_minus_logged_food_kcal_week/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_delta_next_meal_events_per_day_week/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_delta_next_restaurant_meal_fraction_week/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_delta_next_weight_delta_lb/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_budget_breach_flag/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_budget_minus_logged_food_kcal_week/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_dominant_cuisine_week/
+│   │   │   │   │   └── meta.json
+│   │   │   │   ├── y_next_dominant_energy_density_week/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_dominant_meal_archetype_week/
+│   │   │   │   │   └── meta.json
+│   │   │   │   ├── y_next_dominant_prep_profile_week/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_dominant_protein_week/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_dominant_satiety_style_week/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_dominant_service_form_week/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_dominant_starch_week/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_high_meal_frequency_flag/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_meal_events_per_day_week/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_restaurant_heavy_flag/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_restaurant_meal_fraction_week/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_weight_delta_lb/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_weight_gain_flag/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_next_weight_loss_flag/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_same_dominant_cuisine_week/
+│   │   │   │   │   └── meta.json
+│   │   │   │   ├── y_same_dominant_energy_density_week/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_same_dominant_meal_archetype_week/
+│   │   │   │   │   └── meta.json
+│   │   │   │   ├── y_same_dominant_prep_profile_week/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_same_dominant_protein_week/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_same_dominant_satiety_style_week/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   ├── y_same_dominant_service_form_week/
+│   │   │   │   │   ├── meta.json
+│   │   │   │   │   ├── model_comparison.csv
+│   │   │   │   │   ├── test_predictions.csv
+│   │   │   │   │   └── test_summary.json
+│   │   │   │   └── y_same_dominant_starch_week/
+│   │   │   │       ├── meta.json
+│   │   │   │       ├── model_comparison.csv
+│   │   │   │       ├── test_predictions.csv
+│   │   │   │       └── test_summary.json
+│   │   │   ├── overall_summary.csv
+│   │   │   ├── overall_summary.json
+│   │   │   ├── weekends_summary.csv
+│   │   │   └── weeks_summary.csv
+│   │   ├── regime_transition_rolling/
+│   │   │   ├── weekends/
+│   │   │   │   └── y_next_restaurant_heavy_flag/
+│   │   │   │       ├── all_fold_predictions.csv
+│   │   │   │       ├── backtest_report.md
+│   │   │   │       ├── backtest_summary.json
+│   │   │   │       ├── feature_drivers_by_fold.csv
+│   │   │   │       └── fold_metrics.csv
+│   │   │   ├── weeks/
+│   │   │   │   ├── y_next_weight_gain_flag/
+│   │   │   │   │   ├── all_fold_predictions.csv
+│   │   │   │   │   ├── backtest_report.md
+│   │   │   │   │   ├── backtest_summary.json
+│   │   │   │   │   ├── feature_drivers_by_fold.csv
+│   │   │   │   │   └── fold_metrics.csv
+│   │   │   │   └── y_next_weight_loss_flag/
+│   │   │   │       ├── all_fold_predictions.csv
+│   │   │   │       ├── backtest_report.md
+│   │   │   │       ├── backtest_summary.json
+│   │   │   │       ├── feature_drivers_by_fold.csv
+│   │   │   │       └── fold_metrics.csv
+│   │   │   ├── rolling_backtest_overall_summary.csv
+│   │   │   ├── rolling_backtest_overall_summary.json
+│   │   │   └── rolling_backtest_overall_summary.md
+│   │   └── temporal_multires/
+│   │       ├── gru_delta_daysweeks_smoke_v4_1/
+│   │       │   ├── config.json
+│   │       │   ├── data_manifest.json
+│   │       │   ├── final_summary.json
+│   │       │   ├── selected_thresholds.json
+│   │       │   ├── test_metrics_fixed_0_5.json
+│   │       │   ├── test_metrics_tuned.json
+│   │       │   ├── test_prediction_diagnostics.csv
+│   │       │   ├── test_predictions.csv
+│   │       │   ├── test_summary.csv
+│   │       │   ├── training_history.csv
+│   │       │   ├── val_metrics_fixed_0_5.json
+│   │       │   ├── val_metrics_tuned.json
+│   │       │   ├── val_prediction_diagnostics.csv
+│   │       │   └── val_predictions.csv
+│   │       ├── gru_gain_days_smoke_v4_1/
+│   │       │   ├── config.json
+│   │       │   ├── data_manifest.json
+│   │       │   ├── final_summary.json
+│   │       │   ├── selected_thresholds.json
+│   │       │   ├── test_metrics_fixed_0_5.json
+│   │       │   ├── test_metrics_tuned.json
+│   │       │   ├── test_prediction_diagnostics.csv
+│   │       │   ├── test_predictions.csv
+│   │       │   ├── test_summary.csv
+│   │       │   ├── training_history.csv
+│   │       │   ├── val_metrics_fixed_0_5.json
+│   │       │   ├── val_metrics_tuned.json
+│   │       │   ├── val_prediction_diagnostics.csv
+│   │       │   └── val_predictions.csv
+│   │       ├── gru_gain_daysweeks_smoke_v4_1/
+│   │       │   ├── config.json
+│   │       │   ├── data_manifest.json
+│   │       │   ├── final_summary.json
+│   │       │   ├── selected_thresholds.json
+│   │       │   ├── test_metrics_fixed_0_5.json
+│   │       │   ├── test_metrics_tuned.json
+│   │       │   ├── test_prediction_diagnostics.csv
+│   │       │   ├── test_predictions.csv
+│   │       │   ├── test_summary.csv
+│   │       │   ├── training_history.csv
+│   │       │   ├── val_metrics_fixed_0_5.json
+│   │       │   ├── val_metrics_tuned.json
+│   │       │   ├── val_prediction_diagnostics.csv
+│   │       │   └── val_predictions.csv
+│   │       ├── gru_loss_days_smoke_v4_1/
+│   │       │   ├── config.json
+│   │       │   ├── data_manifest.json
+│   │       │   ├── final_summary.json
+│   │       │   ├── selected_thresholds.json
+│   │       │   ├── test_metrics_fixed_0_5.json
+│   │       │   ├── test_metrics_tuned.json
+│   │       │   ├── test_prediction_diagnostics.csv
+│   │       │   ├── test_predictions.csv
+│   │       │   ├── test_summary.csv
+│   │       │   ├── training_history.csv
+│   │       │   ├── val_metrics_fixed_0_5.json
+│   │       │   ├── val_metrics_tuned.json
+│   │       │   ├── val_prediction_diagnostics.csv
+│   │       │   └── val_predictions.csv
+│   │       ├── gru_loss_daysweeks_smoke_v4_1/
+│   │       │   ├── config.json
+│   │       │   ├── data_manifest.json
+│   │       │   ├── final_summary.json
+│   │       │   ├── selected_thresholds.json
+│   │       │   ├── test_metrics_fixed_0_5.json
+│   │       │   ├── test_metrics_tuned.json
+│   │       │   ├── test_prediction_diagnostics.csv
+│   │       │   ├── test_predictions.csv
+│   │       │   ├── test_summary.csv
+│   │       │   ├── training_history.csv
+│   │       │   ├── val_metrics_fixed_0_5.json
+│   │       │   ├── val_metrics_tuned.json
+│   │       │   ├── val_prediction_diagnostics.csv
+│   │       │   └── val_predictions.csv
+│   │       ├── gru_pilot/
+│   │       │   ├── config.json
+│   │       │   ├── data_manifest.json
+│   │       │   ├── final_summary.json
+│   │       │   ├── selected_thresholds.json
+│   │       │   ├── test_metrics.json
+│   │       │   ├── test_predictions.csv
+│   │       │   ├── test_summary.csv
+│   │       │   ├── training_history.csv
+│   │       │   ├── val_metrics.json
+│   │       │   └── val_predictions.csv
+│   │       ├── gru_pilot_v3/
+│   │       │   ├── config.json
+│   │       │   ├── data_manifest.json
+│   │       │   ├── final_summary.json
+│   │       │   ├── selected_thresholds.json
+│   │       │   ├── test_metrics.json
+│   │       │   ├── test_predictions.csv
+│   │       │   ├── test_summary.csv
+│   │       │   ├── training_history.csv
+│   │       │   ├── val_metrics.json
+│   │       │   └── val_predictions.csv
+│   │       ├── gru_smoke/
+│   │       │   ├── config.json
+│   │       │   ├── data_manifest.json
+│   │       │   ├── final_summary.json
+│   │       │   ├── selected_thresholds.json
+│   │       │   ├── test_metrics.json
+│   │       │   ├── test_predictions.csv
+│   │       │   ├── test_summary.csv
+│   │       │   ├── training_history.csv
+│   │       │   ├── val_metrics.json
+│   │       │   └── val_predictions.csv
+│   │       ├── gru_smoke_v3/
+│   │       │   ├── config.json
+│   │       │   ├── data_manifest.json
+│   │       │   ├── final_summary.json
+│   │       │   ├── selected_thresholds.json
+│   │       │   ├── test_metrics.json
+│   │       │   ├── test_predictions.csv
+│   │       │   ├── test_summary.csv
+│   │       │   ├── training_history.csv
+│   │       │   ├── val_metrics.json
+│   │       │   └── val_predictions.csv
+│   │       └── tcn_smoke_v3/
+│   │           ├── config.json
+│   │           ├── data_manifest.json
+│   │           ├── final_summary.json
+│   │           ├── selected_thresholds.json
+│   │           ├── test_metrics.json
+│   │           ├── test_predictions.csv
+│   │           ├── test_summary.csv
+│   │           ├── training_history.csv
+│   │           ├── val_metrics.json
+│   │           └── val_predictions.csv
+│   ├── calibration/
+│   │   └── meal/
+│   ├── feature_importance/
+│   │   ├── daily_transition/
+│   │   │   ├── y_delta_next_budget_minus_logged_food_kcal_day/
+│   │   │   │   └── top_features.csv
+│   │   │   ├── y_delta_next_exercise_calories_day/
+│   │   │   ├── y_delta_next_logged_food_kcal_day/
+│   │   │   │   └── top_features.csv
+│   │   │   ├── y_delta_next_meal_event_count_day/
+│   │   │   ├── y_delta_next_restaurant_meal_count_day/
+│   │   │   │   └── top_features.csv
+│   │   │   ├── y_delta_next_restaurant_meal_fraction_day/
+│   │   │   │   └── top_features.csv
+│   │   │   ├── y_delta_next_samsung_sleep_duration_hours_day/
+│   │   │   ├── y_delta_next_samsung_sleep_score_day/
+│   │   │   ├── y_delta_next_steps_day/
+│   │   │   ├── y_delta_next_true_weight_lb/
+│   │   │   │   └── top_features.csv
+│   │   │   ├── y_next_budget_breach_flag/
+│   │   │   ├── y_next_budget_minus_logged_food_kcal_day/
+│   │   │   │   └── top_features.csv
+│   │   │   ├── y_next_dominant_cuisine_day/
+│   │   │   ├── y_next_dominant_energy_density_day/
+│   │   │   ├── y_next_dominant_meal_archetype_day/
+│   │   │   ├── y_next_dominant_prep_profile_day/
+│   │   │   ├── y_next_dominant_principal_protein_day/
+│   │   │   │   └── top_features.csv
+│   │   │   ├── y_next_dominant_principal_starch_day/
+│   │   │   ├── y_next_dominant_satiety_style_day/
+│   │   │   ├── y_next_dominant_service_form_day/
+│   │   │   ├── y_next_exercise_calories_day/
+│   │   │   ├── y_next_high_kcal_flag/
+│   │   │   ├── y_next_high_meal_frequency_flag/
+│   │   │   │   └── top_features.csv
+│   │   │   ├── y_next_logged_food_kcal_day/
+│   │   │   ├── y_next_meal_event_count_day/
+│   │   │   │   └── top_features.csv
+│   │   │   ├── y_next_restaurant_heavy_flag/
+│   │   │   │   └── top_features.csv
+│   │   │   ├── y_next_restaurant_meal_count_day/
+│   │   │   │   └── top_features.csv
+│   │   │   ├── y_next_restaurant_meal_fraction_day/
+│   │   │   │   └── top_features.csv
+│   │   │   ├── y_next_samsung_sleep_duration_hours_day/
+│   │   │   ├── y_next_samsung_sleep_score_day/
+│   │   │   ├── y_next_steps_day/
+│   │   │   ├── y_next_true_weight_lb/
+│   │   │   ├── y_next_weight_delta_lb/
+│   │   │   │   └── top_features.csv
+│   │   │   ├── y_next_weight_gain_flag/
+│   │   │   │   └── top_features.csv
+│   │   │   ├── y_next_weight_loss_flag/
+│   │   │   │   └── top_features.csv
+│   │   │   ├── y_same_dominant_cuisine_day/
+│   │   │   │   └── top_features.csv
+│   │   │   ├── y_same_dominant_energy_density_day/
+│   │   │   │   └── top_features.csv
+│   │   │   ├── y_same_dominant_meal_archetype_day/
+│   │   │   │   └── top_features.csv
+│   │   │   ├── y_same_dominant_prep_profile_day/
+│   │   │   │   └── top_features.csv
+│   │   │   ├── y_same_dominant_principal_protein_day/
+│   │   │   ├── y_same_dominant_principal_starch_day/
+│   │   │   ├── y_same_dominant_satiety_style_day/
+│   │   │   └── y_same_dominant_service_form_day/
+│   │   │       └── top_features.csv
+│   │   ├── meal/
+│   │   │   ├── y_next_meal_archetype_collapsed_feature_importance.csv
+│   │   │   ├── y_next_meal_family_coarse_feature_importance.csv
+│   │   │   ├── y_next_meal_kcal_log1p_feature_importance.csv
+│   │   │   ├── y_next_restaurant_meal_feature_importance.csv
+│   │   │   └── y_post_meal_budget_breach_feature_importance.csv
+│   │   └── regime_transition/
+│   │       ├── weekends/
+│   │       │   ├── y_delta_next_budget_minus_logged_food_kcal_weekend/
+│   │       │   │   └── top_features.csv
+│   │       │   ├── y_delta_next_meal_events_per_day_weekend/
+│   │       │   │   └── top_features.csv
+│   │       │   ├── y_delta_next_restaurant_meal_fraction_weekend/
+│   │       │   │   └── top_features.csv
+│   │       │   ├── y_delta_next_weight_delta_lb/
+│   │       │   ├── y_next_budget_breach_flag/
+│   │       │   ├── y_next_budget_minus_logged_food_kcal_weekend/
+│   │       │   │   └── top_features.csv
+│   │       │   ├── y_next_dominant_cuisine_weekend/
+│   │       │   ├── y_next_dominant_energy_density_weekend/
+│   │       │   ├── y_next_dominant_meal_archetype_weekend/
+│   │       │   ├── y_next_dominant_prep_profile_weekend/
+│   │       │   ├── y_next_dominant_protein_weekend/
+│   │       │   ├── y_next_dominant_satiety_style_weekend/
+│   │       │   ├── y_next_dominant_service_form_weekend/
+│   │       │   ├── y_next_dominant_starch_weekend/
+│   │       │   ├── y_next_high_meal_frequency_flag/
+│   │       │   ├── y_next_meal_events_per_day_weekend/
+│   │       │   ├── y_next_restaurant_heavy_flag/
+│   │       │   │   └── top_features.csv
+│   │       │   ├── y_next_restaurant_meal_fraction_weekend/
+│   │       │   ├── y_next_weight_delta_lb/
+│   │       │   ├── y_next_weight_gain_flag/
+│   │       │   ├── y_next_weight_loss_flag/
+│   │       │   ├── y_same_dominant_cuisine_weekend/
+│   │       │   ├── y_same_dominant_energy_density_weekend/
+│   │       │   ├── y_same_dominant_meal_archetype_weekend/
+│   │       │   ├── y_same_dominant_prep_profile_weekend/
+│   │       │   ├── y_same_dominant_protein_weekend/
+│   │       │   ├── y_same_dominant_satiety_style_weekend/
+│   │       │   ├── y_same_dominant_service_form_weekend/
+│   │       │   └── y_same_dominant_starch_weekend/
+│   │       └── weeks/
+│   │           ├── y_delta_next_budget_minus_logged_food_kcal_week/
+│   │           │   └── top_features.csv
+│   │           ├── y_delta_next_meal_events_per_day_week/
+│   │           ├── y_delta_next_restaurant_meal_fraction_week/
+│   │           │   └── top_features.csv
+│   │           ├── y_delta_next_weight_delta_lb/
+│   │           │   └── top_features.csv
+│   │           ├── y_next_budget_breach_flag/
+│   │           ├── y_next_budget_minus_logged_food_kcal_week/
+│   │           │   └── top_features.csv
+│   │           ├── y_next_dominant_cuisine_week/
+│   │           ├── y_next_dominant_energy_density_week/
+│   │           ├── y_next_dominant_meal_archetype_week/
+│   │           ├── y_next_dominant_prep_profile_week/
+│   │           ├── y_next_dominant_protein_week/
+│   │           ├── y_next_dominant_satiety_style_week/
+│   │           ├── y_next_dominant_service_form_week/
+│   │           ├── y_next_dominant_starch_week/
+│   │           │   └── top_features.csv
+│   │           ├── y_next_high_meal_frequency_flag/
+│   │           ├── y_next_meal_events_per_day_week/
+│   │           ├── y_next_restaurant_heavy_flag/
+│   │           │   └── top_features.csv
+│   │           ├── y_next_restaurant_meal_fraction_week/
+│   │           │   └── top_features.csv
+│   │           ├── y_next_weight_delta_lb/
+│   │           │   └── top_features.csv
+│   │           ├── y_next_weight_gain_flag/
+│   │           ├── y_next_weight_loss_flag/
+│   │           │   └── top_features.csv
+│   │           ├── y_same_dominant_cuisine_week/
+│   │           ├── y_same_dominant_energy_density_week/
+│   │           │   └── top_features.csv
+│   │           ├── y_same_dominant_meal_archetype_week/
+│   │           ├── y_same_dominant_prep_profile_week/
+│   │           ├── y_same_dominant_protein_week/
+│   │           ├── y_same_dominant_satiety_style_week/
+│   │           ├── y_same_dominant_service_form_week/
+│   │           └── y_same_dominant_starch_week/
+│   ├── inspection/
+│   │   └── regime_transition/
+│   │       ├── weekends/
+│   │       │   └── y_next_restaurant_heavy_flag/
+│   │       │       ├── confusion_table.csv
+│   │       │       ├── feature_driver_summary.csv
+│   │       │       ├── hard_errors.csv
+│   │       │       ├── inspection_report.md
+│   │       │       ├── inspection_scored_predictions.csv
+│   │       │       ├── model_comparison.csv
+│   │       │       ├── test_label_balance.csv
+│   │       │       └── top_correct.csv
+│   │       ├── weeks/
+│   │       │   ├── y_next_weight_gain_flag/
+│   │       │   │   ├── confusion_table.csv
+│   │       │   │   ├── feature_driver_summary.csv
+│   │       │   │   ├── hard_errors.csv
+│   │       │   │   ├── inspection_report.md
+│   │       │   │   ├── inspection_scored_predictions.csv
+│   │       │   │   ├── model_comparison.csv
+│   │       │   │   ├── test_label_balance.csv
+│   │       │   │   └── top_correct.csv
+│   │       │   └── y_next_weight_loss_flag/
+│   │       │       ├── confusion_table.csv
+│   │       │       ├── feature_driver_summary.csv
+│   │       │       ├── hard_errors.csv
+│   │       │       ├── inspection_report.md
+│   │       │       ├── inspection_scored_predictions.csv
+│   │       │       ├── model_comparison.csv
+│   │       │       ├── test_label_balance.csv
+│   │       │       └── top_correct.csv
+│   │       ├── inspection_overall_summary.csv
+│   │       ├── inspection_overall_summary.json
+│   │       └── inspection_overall_summary.md
+│   ├── scoring/
+│   │   ├── daily_weight_direction/
+│   │   │   ├── y_next_weight_gain_flag/
+│   │   │   │   ├── global_driver_summary.csv
+│   │   │   │   ├── local_driver_proxies.csv
+│   │   │   │   ├── score_channels.csv
+│   │   │   │   └── score_summary.json
+│   │   │   ├── y_next_weight_loss_flag/
+│   │   │   │   ├── global_driver_summary.csv
+│   │   │   │   ├── local_driver_proxies.csv
+│   │   │   │   ├── score_channels.csv
+│   │   │   │   └── score_summary.json
+│   │   │   ├── latest_score_report.md
+│   │   │   ├── latest_score_summary.csv
+│   │   │   ├── latest_score_summary.json
+│   │   │   └── scored_day_reference.csv
+│   │   └── daily_weight_direction_history/
+│   │       ├── y_next_weight_gain_flag/
+│   │       │   ├── historical_report.md
+│   │       │   ├── historical_scored_rows.csv
+│   │       │   ├── historical_summary.json
+│   │       │   ├── primary_band_realization_summary.csv
+│   │       │   ├── primary_monthly_metrics.csv
+│   │       │   ├── primary_split_metrics.csv
+│   │       │   ├── score_channels_reference.csv
+│   │       │   ├── top_false_alarm_days.csv
+│   │       │   ├── top_high_risk_days.csv
+│   │       │   └── top_missed_event_days.csv
+│   │       ├── y_next_weight_loss_flag/
+│   │       │   ├── historical_report.md
+│   │       │   ├── historical_scored_rows.csv
+│   │       │   ├── historical_summary.json
+│   │       │   ├── primary_band_realization_summary.csv
+│   │       │   ├── primary_monthly_metrics.csv
+│   │       │   ├── primary_split_metrics.csv
+│   │       │   ├── score_channels_reference.csv
+│   │       │   ├── top_false_alarm_days.csv
+│   │       │   ├── top_high_risk_days.csv
+│   │       │   └── top_missed_event_days.csv
+│   │       ├── overall_report.md
+│   │       ├── overall_summary.csv
+│   │       └── overall_summary.json
+│   └── weekly_weight_gain_refined/
+│       ├── fold_01/
+│       │   ├── test_predictions.csv
+│       │   ├── threshold_scan_balanced_accuracy.csv
+│       │   └── threshold_scan_macro_f1.csv
+│       ├── fold_02/
+│       │   ├── test_predictions.csv
+│       │   ├── threshold_scan_balanced_accuracy.csv
+│       │   └── threshold_scan_macro_f1.csv
+│       ├── all_scored_weeks.csv
+│       ├── coefficient_summary.csv
+│       ├── feature_manifest.csv
+│       ├── overall_report.md
+│       ├── overall_summary.csv
+│       ├── overall_summary.json
+│       ├── recent_scored_weeks.csv
+│       ├── rolling_fold_metrics.csv
+│       └── rolling_predictions.csv
+├── samsung/
+│   ├── com.samsung.health.sleep_stage.20260411021045.csv
+│   ├── com.samsung.health.weight.20260411021045.csv
+│   ├── com.samsung.shealth.activity.day_summary.20260411021045.csv
+│   ├── com.samsung.shealth.calories_burned.details.20260411021045.csv
+│   ├── com.samsung.shealth.exercise.20260411021045.csv
+│   ├── com.samsung.shealth.sleep.20260411021045.csv
+│   ├── com.samsung.shealth.stress.20260411021045.csv
+│   ├── com.samsung.shealth.tracker.heart_rate.20260411021045.csv
+│   ├── com.samsung.shealth.tracker.oxygen_saturation.20260411021045.csv
+│   ├── com.samsung.shealth.tracker.pedometer_day_summary.20260411021045.csv
+│   └── com.samsung.shealth.tracker.pedometer_step_count.20260411021045.csv
+├── training/
+│   ├── daily_transition/
+│   │   ├── daily_transition_manifest.json
+│   │   ├── days_transition_matrix.csv
+│   │   ├── days_transition_preview.csv
+│   │   ├── days_transition_summary.json
+│   │   └── days_transition_target_spec.json
+│   ├── meal_sequence_source/
+│   │   ├── meal_event_sequence_source.csv
+│   │   ├── meal_event_sequence_source_manifest.json
+│   │   ├── meal_event_sequence_source_preview.csv
+│   │   ├── meal_event_sequence_source_report.md
+│   │   ├── meal_event_sequence_source_summary.json
+│   │   └── meal_source_candidates_scored.csv
+│   ├── meal_timeline_canonical/
+│   │   ├── canonical_meal_timeline.csv
+│   │   ├── canonical_meal_timeline_manifest.json
+│   │   ├── canonical_meal_timeline_preview.csv
+│   │   ├── canonical_meal_timeline_report.md
+│   │   ├── canonical_meal_timeline_summary.json
+│   │   └── meal_timeline_candidates_scored.csv
+│   ├── multires_sequence_dataset/
+│   │   ├── anchors.csv
+│   │   ├── days_numeric_sequences.npz
+│   │   ├── days_sequence_long.csv.gz
+│   │   ├── feature_manifest.csv
+│   │   ├── meals_numeric_sequences.npz
+│   │   ├── meals_sequence_long.csv.gz
+│   │   ├── modality_masks.csv
+│   │   ├── overall_report.md
+│   │   ├── overall_summary.csv
+│   │   ├── overall_summary.json
+│   │   ├── source_manifest.json
+│   │   ├── weeks_numeric_sequences.npz
+│   │   └── weeks_sequence_long.csv.gz
+│   ├── predictive_views/
+│   │   ├── meal_prediction_view.csv
+│   │   └── meal_prediction_view_manifest.json
+│   ├── regime_transition/
+│   │   ├── regime_transition_manifest.json
+│   │   ├── regime_transition_target_spec.json
+│   │   ├── weekends_transition_matrix.csv
+│   │   ├── weekends_transition_preview.csv
+│   │   ├── weekends_transition_summary.json
+│   │   ├── weekends_transition_target_spec.json
+│   │   ├── weeks_transition_matrix.csv
+│   │   ├── weeks_transition_preview.csv
+│   │   ├── weeks_transition_summary.json
+│   │   └── weeks_transition_target_spec.json
+│   ├── splits/
+│   │   └── meal_walkforward_splits.json
+│   ├── targets/
+│   │   └── target_spec_meal_prediction.json
+│   ├── day_feature_matrix.csv
+│   ├── day_feature_matrix_manifest.json
+│   ├── meal_decision_points.csv
+│   ├── meal_decision_points_manifest.json
+│   ├── week_summary_matrix.csv
+│   ├── week_summary_matrix_manifest.json
+│   ├── weekend_summary_matrix.csv
+│   └── weekend_summary_matrix_manifest.json
+├── weather/
+│   ├── weather_context_15min.csv
+│   ├── weather_context_daily.csv
+│   ├── weather_context_manifest.json
+│   ├── weather_daily_raw.csv
+│   └── weather_hourly_raw.csv
+├── .gitignore
+├── .gitkeep
+├── analyze_daily_weight_direction_targets.py
+├── analyze_daily_weight_direction_targets_v2.py
+├── analyze_weekly_weight_gain_focus.py
+├── apply_meal_llm_review_batch.py
+├── apply_meal_llm_review_batch_v2.py
+├── audit_regime_representation_results.py
+├── backtest_regime_transition_targets.py
+├── build_canonical_meal_timeline.py
+├── build_daily_transition_targets.py
+├── build_daily_transition_targets_v2.py
+├── build_daily_transition_targets_v3.py
+├── build_day_feature_matrix.py
+├── build_foodai_project.py
+├── build_foodai_project_v2.py
+├── build_meal_db_final.py
+├── build_meal_db_final_repaired.py
+├── build_meal_db_final_repaired_v2.py
+├── build_meal_db_final_v2.py
+├── build_meal_db_seed.py
+├── build_meal_decision_points.py
+├── build_meal_event_sequence_source.py
+├── build_meal_event_sequence_source_v2.py
+├── build_meal_event_sequence_source_v3.py
+├── build_meal_prediction_view.py
+├── build_multires_sequence_dataset.py
+├── build_multires_sequence_dataset_v2.py
+├── build_regime_transition_targets.py
+├── build_regime_transition_targets_v2.py
+├── build_retrieval_baselines.py
+├── build_retrieval_baselines_v2.py
+├── build_retrieval_baselines_v3.py
+├── build_weather_context.py
+├── build_weather_context_v2.py
+├── build_week_summary_matrix.py
+├── build_weekend_summary_matrix.py
+├── calibrate_weekly_weight_gain_probabilities.py
+├── DEVELOPER_GUIDE.md
+├── export_meal_llm_review_batches.py
+├── export_meal_llm_review_batches_v2.py
+├── generate_repo_inventory.py
+├── inspect_regime_transition_targets.py
+├── inspect_regime_transition_targets_v2.py
+├── inspect_regime_transition_targets_v3.py
+├── meal_db_seed_runbook.md
+├── NEXT_DEVELOPER_HANDOFF.md
+├── PROJECT_HISTORY.md
+├── README.md
+├── score_daily_weight_direction.py
+├── score_daily_weight_direction_history.py
+├── score_daily_weight_direction_v2.py
+├── score_daily_weight_direction_v3.py
+├── SCRIPT_CATALOG.md
+├── train_daily_transition_models.py
+├── train_meal_baselines.py
+├── train_meal_baselines_v2.py
+├── train_meal_baselines_v3.py
+├── train_meal_baselines_v4.py
+├── train_regime_transition_models.py
+├── train_representation_encoders.py
+├── train_representation_encoders_v2.py
+├── train_representation_encoders_v2_1.py
+├── train_representation_encoders_v3.py
+├── train_representation_encoders_v3_1.py
+├── train_representation_encoders_v3_2.py
+├── train_representation_encoders_v3_2_1.py
+├── train_temporal_multires_models.py
+├── train_temporal_multires_models_v2.py
+├── train_temporal_multires_models_v3.py
+├── train_temporal_multires_models_v4.py
+├── train_temporal_multires_models_v4_1.py
+├── train_weekly_weight_gain_refined.py
+└── train_weekly_weight_gain_refined_v2.py
