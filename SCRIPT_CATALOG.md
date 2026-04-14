@@ -766,8 +766,8 @@ For each script, the goal is to answer:
 - determine whether any temporal target/modality combination is promising enough to justify longer runs
 
 ## `train_temporal_multires_simple_baselines_v1.py`
-**Status:** current conservative temporal baseline trainer  
-**Purpose:** train simple non-recurrent lag-window baselines on the multires sequence pack.
+**Status:** superseded conservative temporal baseline trainer  
+**Purpose:** first simple non-recurrent lag-window baseline trainer on the multires sequence pack.
 
 **Key features**
 - flattens recent modality windows into tabular temporal features
@@ -776,9 +776,28 @@ For each script, the goal is to answer:
 - trains dummy / linear / tree baselines for binary and regression targets
 - writes comparable backtest artifacts under `reports/backtests/temporal_multires/<run_name>/`
 
-**Current project role**
+**Why superseded**
+- a single-binary CLI run could still train the default regression target unless regression was explicitly disabled
+
+**Historical project role**
 - provide a data-efficient non-neural reference for `y_next_weight_loss_flag` and `y_next_weight_delta_lb`
 - test whether simple lag-window structure is learnable before escalating to more complex temporal architectures
+
+## `train_temporal_multires_simple_baselines_v2.py`
+**Status:** current conservative temporal baseline trainer  
+**Purpose:** fix-forward simple non-recurrent lag-window baseline trainer on the multires sequence pack.
+
+**Key features**
+- preserves the v1 feature build, model selection, and artifact layout
+- reuses `anchors.csv` and `split_suggested` from the multires dataset
+- supports days / weeks / meals modality toggles
+- defaults to binary-target training without silently adding regression
+- still allows explicit regression runs through `--regression-targets` or `--single-regression-target`
+- writes compatible backtest artifacts under `reports/backtests/temporal_multires/<run_name>/`
+
+**Current project role**
+- provide the conservative temporal comparison floor for binary temporal diagnostics
+- keep regression runs explicit rather than accidental
 
 ---
 
@@ -790,6 +809,8 @@ For each script, the goal is to answer:
 
 **Includes**
 - system Python runtime
+- `git`
+- `ripgrep`
 - pinned temporal workflow dependencies from `requirements-codex-temporal.txt`
 - `scripts/start_codex.sh` as the default container entrypoint
 
@@ -822,7 +843,7 @@ For each script, the goal is to answer:
 
 **Current project role**
 - support `build_multires_sequence_dataset_v2.py`
-- support `train_temporal_multires_simple_baselines_v1.py`
+- support `train_temporal_multires_simple_baselines_v2.py`
 - support CPU smoke-test use of `train_temporal_multires_models_v4_1.py`
 
 ## `scripts/start_codex.sh`
@@ -884,7 +905,7 @@ If a future developer wants the most relevant current path rather than the full 
 
 8. temporal diagnostics and conservative baselines
    - `train_temporal_multires_models_v4_1.py`
-   - `train_temporal_multires_simple_baselines_v1.py`
+   - `train_temporal_multires_simple_baselines_v2.py`
 
 ---
 

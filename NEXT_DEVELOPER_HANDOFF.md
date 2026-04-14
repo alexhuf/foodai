@@ -160,7 +160,7 @@ Choose one path:
 
 #### Path B — simpler sequence baseline
 A conservative non-recurrent baseline path now exists via:
-- `train_temporal_multires_simple_baselines_v1.py`
+- `train_temporal_multires_simple_baselines_v2.py`
 
 Current completed runs:
 - `simple_loss_days_v1`
@@ -174,6 +174,9 @@ What they established:
 - any new GRU / TCN / transformer smoke should be compared directly against `simple_loss_daysweeks_v1`
 
 This path is intentionally more data-efficient than the current neural branch and should be checked before any broader temporal escalation.
+
+Operational note:
+- use `train_temporal_multires_simple_baselines_v2.py` for future binary-only baseline runs because it no longer trains the default regression target unless regression is explicitly requested
 
 ---
 
@@ -214,7 +217,7 @@ Only escalate to long real pilots once a smoke-test configuration clears somethi
 
 ### Temporal training side
 - `train_temporal_multires_models_v4_1.py`
-- `train_temporal_multires_simple_baselines_v1.py`
+- `train_temporal_multires_simple_baselines_v2.py`
 
 ### Anchor / reference side
 - daily scoring and historical scorer scripts

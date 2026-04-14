@@ -1,22 +1,29 @@
-FROM python:3.11-slim
+FROM python:3.11-slim-bookworm
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends bash ca-certificates tini \
-    && rm -rf /var/lib/apt/lists/*
-
 WORKDIR /workspace/foodai
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends bash ca-certificates curl git ripgrep tini \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends nodejs \
+    && npm i -g @openai/codex@latest \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY requirements-codex-temporal.txt /tmp/requirements-codex-temporal.txt
+
 RUN python -m pip install --upgrade pip setuptools wheel \
     && python -m pip install -r /tmp/requirements-codex-temporal.txt
 
 COPY scripts/start_codex.sh /usr/local/bin/start_codex.sh
 RUN chmod +x /usr/local/bin/start_codex.sh
 
-ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/start_codex.sh"]
+ENTRYPOINT ["start_codex.sh"]
 CMD ["bash"]
