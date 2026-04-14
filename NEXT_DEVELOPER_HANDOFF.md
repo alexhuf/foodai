@@ -218,6 +218,16 @@ Only escalate to long real pilots once a smoke-test configuration clears somethi
 ### Temporal training side
 - `train_temporal_multires_models_v4_1.py`
 - `train_temporal_multires_simple_baselines_v2.py`
+- `train_temporal_multires_neural_compare_v1.py`
+
+### Current focused neural comparison entry point
+Use `train_temporal_multires_neural_compare_v1.py` when the goal is to compare neural families on the current best-bounded temporal setup only:
+- target: `y_next_weight_loss_flag`
+- modalities: `days,weeks`
+- binary only
+- explicit reference runs:
+  - `simple_loss_daysweeks_v2`
+  - `gru_loss_daysweeks_smoke_v4_1`
 
 ### Anchor / reference side
 - daily scoring and historical scorer scripts

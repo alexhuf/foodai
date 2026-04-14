@@ -799,6 +799,27 @@ For each script, the goal is to answer:
 - provide the conservative temporal comparison floor for binary temporal diagnostics
 - keep regression runs explicit rather than accidental
 
+## `train_temporal_multires_neural_compare_v1.py`
+**Status:** current focused temporal comparison wrapper  
+**Purpose:** run a bounded neural comparison only on the strongest current temporal setup:
+- target: `y_next_weight_loss_flag`
+- modalities: `days,weeks`
+- binary only
+- no regression head
+
+**Key features**
+- reuses `train_temporal_multires_models_v4_1.py` rather than forking trainer internals
+- runs one or more neural families with the same constrained setup
+- writes an aggregate comparison bundle under `reports/backtests/temporal_multires/<comparison_run_name>/`
+- makes the comparison explicit against:
+  - `simple_loss_daysweeks_v2`
+  - `gru_loss_daysweeks_smoke_v4_1`
+- keeps probability-dispersion diagnostics in the comparison table because under-dispersed outputs were the prior neural failure mode
+
+**Current project role**
+- provide the next bounded neural architecture comparison without widening scope to meals, regression, or multi-head training
+- force future neural smoke tests and pilots to be read against the current simple temporal floor
+
 ---
 
 # 14. Codex runtime support
