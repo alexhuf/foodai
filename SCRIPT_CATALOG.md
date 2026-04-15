@@ -856,6 +856,24 @@ For each script, the goal is to answer:
 - determine whether `simple_loss_daysweeks_v2` is stable enough to treat as the current operational best flattened temporal path
 - surface the top drivers and failure modes before any nearby ET window or split follow-on
 
+## `analyze_temporal_flat_winner_operational_v1.py`
+**Status:** current diagnostic operational-validation stage  
+**Purpose:** stress the saved `simple_loss_daysweeks_v2` winner as an operating classifier under rolling calibration/eval splits without changing the underlying trained artifact.
+
+**Key features**
+- loads the saved `simple_loss_daysweeks_v2` ET winner and its selected threshold
+- runs time-aware rolling operational checks with configurable minimum train, calibration, and eval windows
+- writes threshold operating tables, calibration comparisons, segmented error slices, and rolling-fold summaries under `reports/backtests/temporal_multires/<analysis_name>/`
+- makes it easy to compare the saved `0.4288` operating point against nearby threshold zones such as `0.44` to `0.455`
+- supports split-mimic validation so operating-threshold claims can be tested under slightly different rolling geometry before promotion
+
+**Writes**
+- one bounded operational-analysis bundle under `reports/backtests/temporal_multires/<analysis_name>/`
+
+**Current project role**
+- test whether the current ET winner remains credible under alternate rolling split choices
+- decide whether false-positive-heavy threshold behavior is stable enough to justify promoting a new operating point above `0.4288`
+
 ## `run_temporal_path_exploration_v1.py`
 **Status:** current bounded temporal path-search orchestrator  
 **Purpose:** automate a small, evidence-driven experiment matrix over the current most plausible temporal branches.

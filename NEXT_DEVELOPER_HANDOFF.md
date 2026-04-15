@@ -246,6 +246,43 @@ Interpretation:
 - that does **not** mean the threshold is operationally settled or that the ET family is fully robust to seed/decision-boundary variance
 - the next bounded development step should therefore stay on the same target/family/modality path, but probe a nearby window choice rather than rerunning the exact same config again
 
+### 4.8 What the split-mimic operational validation showed
+The requested split-mimic operational recheck has now been run via:
+- `analyze_temporal_flat_winner_operational_v1.py --project-root /workspace/foodai --analysis-name simple_loss_daysweeks_v2_operational_check_splitmimic_v1 --min-train-rows 245 --calibration-window-rows 46 --eval-window-rows 39`
+
+Bundle location:
+- `reports/backtests/temporal_multires/simple_loss_daysweeks_v2_operational_check_splitmimic_v1/`
+
+Most important outcomes:
+- the held-out split-mimic eval slice reproduced the same raw saved-model result seen in the winner analysis
+  - threshold = `0.4288`
+  - balanced accuracy = `0.8611`
+  - ROC AUC = `0.9167`
+  - test confusion = `TN=26, FP=10, FN=0, TP=3`
+- the nearby higher threshold zone remained favorable on that eval slice
+  - `0.44` gave balanced accuracy = `0.8889` with `FP=8`, `FN=0`
+  - `0.445` to `0.4545` gave balanced accuracy = `0.9167` with `FP=6`, `FN=0`
+  - `0.455` gave balanced accuracy = `0.9306` with `FP=5`, `FN=0`
+  - `0.4603` remained the best zero-FN point with balanced accuracy = `0.9444` and `FP=4`
+- false-positive heaviness improved meaningfully on the eval slice once thresholds moved above the saved `0.4288`
+  - false-positive rate fell from `0.2778` at `0.4288` to `0.1667` at `0.445` and `0.1389` at `0.455`
+- calibration did not overturn the raw-threshold conclusion
+  - isotonic-on-val improved ECE to `0.0944`, but reproduced the same `FP=10`, `FN=0` operating behavior at its tuned threshold
+- the split-mimic time-aware check was weaker than the earlier operational pass
+  - rolling folds dropped from `4` to `2`
+  - balanced-accuracy mean/min/max became `0.6852 / 0.5093 / 0.8611`
+  - fold 1 was only `0.5093` balanced accuracy with a much higher positive rate in that eval window
+
+Interpretation:
+- the `0.44` to `0.455` candidate zone is still defensible as a **held-out-slice threshold-improvement zone**
+- the new split-mimic check strengthens the claim that the saved `0.4288` threshold is more false-positive-heavy than necessary on the current eval slice
+- it does **not** strengthen the broader claim that a threshold above `0.4288` is already stable enough for operational promotion, because the split-mimic rolling results are weaker than the original operational check and only one of the two folds resembles the favorable latest-slice picture
+- the next bounded step should therefore stay additive and nearby:
+  - keep `y_next_weight_loss_flag`
+  - keep `days,weeks`
+  - keep the ET family
+  - test a small window or split variant before adopting a new operating threshold
+
 ---
 
 ## 5. Most likely causes of current temporal underperformance
@@ -291,6 +328,7 @@ Why:
 - they show the current neural branch is still underperforming a more conservative baseline on the same dataset
 - they make binary loss on flattened `days,weeks` the cleanest target for the next bounded comparison
 - they collapse the earlier shortlist to one clearly preferred flattened family
+- the new split-mimic check supports a nearby higher threshold zone on the current eval slice, but not yet enough rolling stability to promote it
 
 ### After that
 Choose one path:
@@ -301,6 +339,7 @@ Choose one path:
 - keep modalities = `days,weeks`
 - do not widen scope to meals or regression
 - use `simple_loss_daysweeks_v2_winner_analysis_v1` to read threshold sensitivity and dominant lag groups before touching the next training command
+- use `simple_loss_daysweeks_v2_operational_check_splitmimic_v1` to read how threshold behavior changes under the shorter rolling split before promoting any new operating point
 - use the exploration bundle to rank any follow-on directly against:
   - `simple_loss_daysweeks_v2`
   - `gru_loss_daysweeks_smoke_v4_1`
@@ -363,6 +402,7 @@ Only escalate to long real pilots once a smoke-test configuration clears somethi
 - `train_temporal_multires_neural_compare_v1.py`
 - `train_temporal_multires_flattened_explore_v1.py`
 - `analyze_temporal_flat_winner_v1.py`
+- `analyze_temporal_flat_winner_operational_v1.py`
 - `run_temporal_path_exploration_v1.py`
 
 ### Current focused neural comparison entry point
