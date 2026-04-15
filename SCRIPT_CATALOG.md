@@ -917,6 +917,29 @@ For each script, the goal is to answer:
 - close the current threshold-promotion question with forward fixed-threshold evidence rather than another held-out-only argument
 - determine whether the repo should keep the threshold locked at `0.4288` and return attention to temporal training design
 
+## `score_temporal_flat_winner_v1.py`
+**Status:** current operational scoring stage  
+**Purpose:** turn the locked `simple_loss_daysweeks_v2` flattened ET winner into a direct scoring artifact without retraining or changing the threshold.
+
+**Key features**
+- rebuilds the exact saved `days,weeks` lag-window feature frame from the multires dataset
+- loads the authoritative winner artifact plus the locked policy files
+- scores every anchor cheaply and writes a compact history-scoring table
+- selects either an explicit `anchor_id` or the latest eligible anchor row for single-case operational output
+- emits the locked threshold decision and the current policy band:
+  - below `0.4288`
+  - `0.4288` to `<0.44`
+  - `0.44` to `0.455` candidate promotion zone
+  - `>0.455` stronger positive rank position
+- states explicitly that the score is a ranking/threshold signal, not a calibrated probability
+
+**Writes**
+- one operational scoring bundle under `reports/backtests/temporal_multires/<scoring_name>/`
+
+**Current project role**
+- operationalize the frozen flattened ET winner as a usable scorer
+- keep future single-case and batch/history scoring aligned to the same saved model, feature build, and locked threshold policy
+
 ## `run_temporal_path_exploration_v1.py`
 **Status:** current bounded temporal path-search orchestrator  
 **Purpose:** automate a small, evidence-driven experiment matrix over the current most plausible temporal branches.
