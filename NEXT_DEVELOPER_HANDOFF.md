@@ -340,6 +340,45 @@ Interpretation:
 - exact next command after this validation pass:
   - `python train_temporal_multires_neural_compare_v1.py --project-root /workspace/foodai --comparison-run-name loss_daysweeks_compare_focal_smoke_v1 --families gru,tcn --binary-loss-mode focal --focal-gamma 2.0 --smoke-test`
 
+### 4.11 What the focal-loss GRU/TCN smoke probe showed
+The requested focal-loss comparison has now been run via:
+- `python train_temporal_multires_neural_compare_v1.py --project-root /workspace/foodai --comparison-run-name loss_daysweeks_compare_focal_smoke_v1 --families gru,tcn --binary-loss-mode focal --focal-gamma 2.0 --smoke-test`
+
+Bundle location:
+- `reports/backtests/temporal_multires/loss_daysweeks_compare_focal_smoke_v1/`
+
+Direct focal-loss outcomes:
+- `gru_loss_daysweeks_compare_smoke_v1`
+  - balanced accuracy = `0.5417`
+  - ROC AUC = `0.5000`
+  - `prob_std` = `0.0139`
+  - fixed `0.5` threshold still predicted all-negative
+  - tuned threshold lifted positive rate only to `0.2564`
+- `tcn_loss_daysweeks_compare_smoke_v1`
+  - balanced accuracy = `0.5000`
+  - ROC AUC = `0.4722`
+  - `prob_std` = `0.0083`
+  - fixed and tuned thresholds both stayed all-positive
+
+Direct comparison against the requested references:
+- versus `simple_loss_daysweeks_v2`
+  - focal GRU trailed by `0.3194` balanced accuracy and `0.4167` ROC AUC
+  - focal TCN trailed by `0.3611` balanced accuracy and `0.4444` ROC AUC
+- versus `gru_loss_daysweeks_smoke_v4_1`
+  - focal GRU improved balanced accuracy from `0.4444` to `0.5417`, but ROC AUC fell from `0.5278` to `0.5000` and `prob_std` fell from `0.0202` to `0.0139`
+- versus `tcn_loss_daysweeks_compare_smoke_v1_check`
+  - focal TCN lost balanced accuracy from `0.5833` to `0.5000`, lost ROC AUC from `0.5000` to `0.4722`, and slightly narrowed dispersion from `0.0090` to `0.0083`
+- versus `tcn_loss_daysweeks_compare_pilot_v1`
+  - focal TCN exactly matched the same all-positive collapse pattern, with identical tuned balanced accuracy = `0.5000` and identical ROC AUC = `0.4722`
+
+Interpretation:
+- focal loss did **not** improve probability dispersion
+- focal loss did **not** resolve collapse or one-class behavior
+  - GRU still collapsed to all-negative at `0.5`
+  - TCN still collapsed to all-positive even after threshold tuning
+- focal loss did **not** improve balanced accuracy or ROC AUC enough to keep GRU/TCN neural sequence work as the leading path
+- for the current repo state, GRU/TCN sequence work should now be treated as **frozen behind the flattened ET winner** unless a new architecture or training design clears `simple_loss_daysweeks_v2` on both ranking and tuned classification behavior
+
 ---
 
 ## 5. Most likely causes of current temporal underperformance
@@ -353,6 +392,7 @@ These are hypotheses, not final truths, but they are the best current explanatio
 2. **Architecture mismatch**
    - GRU does not appear to be the right inductive bias here
    - TCN improved slightly over GRU in the bounded comparison, but not enough to change the project state
+   - the focal-loss GRU/TCN retry did not rescue either family
    - the current transformer smoke setup is not yet viable
    - the new bounded path search confirms flattened boosted-tree models are still the strongest near-term class
    - the flattened MLP path did not validate as the next-best direction
@@ -371,7 +411,7 @@ These are hypotheses, not final truths, but they are the best current explanatio
 ## 6. Recommended next steps
 
 ### Highest-priority next work
-Use the new simple baseline results as the comparison floor and treat bounded flattened-tree refinement as the leading next path before any further neural escalation.
+Use the new simple baseline results as the comparison floor and treat bounded flattened-tree refinement as the leading next path. After the focal-loss failure, GRU/TCN sequence work should stay frozen unless a materially different setup earns another bounded retry.
 
 Current empirical floor:
 1. `simple_loss_daysweeks_v2`
@@ -415,6 +455,7 @@ Choose one path:
 #### Path B — continue neural ablations only after a concrete reason appears
 - if continuing neural work, use `gru_loss_daysweeks_bce_smoke_v1` only as a diagnostic sign that ranking may be salvageable, not as a pilot candidate
 - treat `tcn_loss_daysweeks_compare_smoke_v1_check` as the current TCN neural ceiling until a new run clears it on both ranking and balanced accuracy
+- treat `loss_daysweeks_compare_focal_smoke_v1` as a negative result, not as a promotion path
 - do not revisit transformer until there is a concrete optimization reason rather than a generic architecture retry
 
 Operational note:
@@ -428,6 +469,7 @@ Operational note:
 Do **not**:
 - start a multi-day brute-force GPU run
 - declare temporal models superior
+- keep spending bounded cycles on the same GRU/TCN loss-days,weeks setup without a concrete new training idea
 - retire the anchor branch
 - add more complexity before isolating a setup that clearly beats chance and approaches anchor performance
 

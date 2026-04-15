@@ -810,6 +810,7 @@ For each script, the goal is to answer:
 **Key features**
 - reuses `train_temporal_multires_models_v4_1.py` rather than forking trainer internals
 - runs one or more neural families with the same constrained setup
+- supports bounded loss-mode checks such as BCE versus focal loss on the same target/modality slice
 - writes an aggregate comparison bundle under `reports/backtests/temporal_multires/<comparison_run_name>/`
 - makes the comparison explicit against:
   - `simple_loss_daysweeks_v2`
@@ -819,6 +820,7 @@ For each script, the goal is to answer:
 **Current project role**
 - provide the next bounded neural architecture comparison without widening scope to meals, regression, or multi-head training
 - force future neural smoke tests and pilots to be read against the current simple temporal floor
+- record negative bounded retries such as `loss_daysweeks_compare_focal_smoke_v1`, where focal loss failed to improve GRU/TCN dispersion or ranking enough to unfreeze the neural path
 
 ## `train_temporal_multires_flattened_explore_v1.py`
 **Status:** current bounded flattened-path explorer  
