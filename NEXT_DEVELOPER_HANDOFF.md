@@ -307,6 +307,39 @@ Interpretation:
 - this is a policy freeze, not a model-family change and not a threshold promotion
 - the next command should continue the nearby same-family window check rather than reopen threshold promotion prematurely
 
+### 4.10 What the additive threshold-promotion confirmation pass showed
+The requested additive threshold-promotion confirmation pass has now been run via:
+- `python analyze_temporal_flat_threshold_promotion_v1.py --project-root /workspace/foodai`
+
+Bundle location:
+- `reports/backtests/temporal_multires/simple_loss_daysweeks_v2_threshold_promotion_check_v1/`
+
+Most important outcomes:
+- the held-out 39-row slice still favors the higher candidate zone
+  - `0.4400` gave balanced accuracy = `0.8889` with `FP=8`, `FN=0`
+  - `0.4450` and `0.4500` gave balanced accuracy = `0.9167` with `FP=6`, `FN=0`
+  - `0.4550` gave balanced accuracy = `0.9306` with `FP=5`, `FN=0`
+- the new fixed-threshold time-aware confirmation rejected promotion across 6 forward folds of 39 eval rows each
+  - locked `0.4288`: mean fold balanced accuracy = `0.5718`, pooled balanced accuracy = `0.5832`, `FP_total=43`, `FN_total=30`
+  - `0.4400`: mean fold balanced accuracy = `0.5580`, pooled balanced accuracy = `0.5613`, `FP_total=40`, `FN_total=33`
+  - `0.4450`: mean fold balanced accuracy = `0.5639`, pooled balanced accuracy = `0.5667`, `FP_total=38`, `FN_total=33`
+  - `0.4500`: mean fold balanced accuracy = `0.5429`, pooled balanced accuracy = `0.5495`, `FP_total=37`, `FN_total=35`
+  - `0.4550`: mean fold balanced accuracy = `0.5514`, pooled balanced accuracy = `0.5576`, `FP_total=34`, `FN_total=35`
+- no candidate threshold in `0.44` to `0.455` cleared the additive support rule against the lock
+  - every candidate reduced false positives
+  - every candidate also increased false negatives and failed to beat the locked threshold on mean fold balanced accuracy and pooled balanced accuracy
+- the threshold remains unpromoted
+  - promoted threshold = `none`
+  - operational threshold stays locked at `0.4288`
+
+Interpretation:
+- the threshold-promotion question is now materially more settled for the current winner
+- the held-out slice still says the score ranking is useful, but the new forward check says the higher candidate zone is not robust enough to replace the lock
+- do **not** spend the next cycle on more threshold-promotion arguments for `simple_loss_daysweeks_v2` unless new model behavior changes the score distribution itself
+- the next bounded step should move back to temporal training design on the same locked target/modality pair
+- exact next command after this validation pass:
+  - `python train_temporal_multires_neural_compare_v1.py --project-root /workspace/foodai --comparison-run-name loss_daysweeks_compare_focal_smoke_v1 --families gru,tcn --binary-loss-mode focal --focal-gamma 2.0 --smoke-test`
+
 ---
 
 ## 5. Most likely causes of current temporal underperformance
@@ -432,6 +465,7 @@ Only escalate to long real pilots once a smoke-test configuration clears somethi
 - `train_temporal_multires_flattened_explore_v1.py`
 - `analyze_temporal_flat_winner_v1.py`
 - `analyze_temporal_flat_winner_operational_v1.py`
+- `analyze_temporal_flat_threshold_promotion_v1.py`
 - `run_temporal_path_exploration_v1.py`
 
 ### Current focused neural comparison entry point

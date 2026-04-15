@@ -893,6 +893,28 @@ For each script, the goal is to answer:
 - freeze the current winner into an auditable operational policy artifact while keeping the threshold locked
 - separate “use now” policy from “promotion later” criteria so future developers do not over-read the favorable held-out slice
 
+## `analyze_temporal_flat_threshold_promotion_v1.py`
+**Status:** current diagnostic threshold-confirmation stage  
+**Purpose:** run one more additive time-aware threshold confirmation pass for `simple_loss_daysweeks_v2` without reopening the already-rejected ET window-pilot path.
+
+**Key features**
+- keeps the model, target, and modalities locked at:
+  - `simple_loss_daysweeks_v2`
+  - `y_next_weight_loss_flag`
+  - `days,weeks`
+- reuses the existing held-out threshold table so the locked `0.4288` operating point and the `0.44` to `0.455` candidate zone stay directly comparable
+- fits the same ET family on expanding forward folds and scores each eval window with fixed thresholds only
+- writes fold-level and pooled threshold summaries under `reports/backtests/temporal_multires/<analysis_name>/`
+- records whether any single candidate threshold is actually promotable once additive time-aware evidence is included
+- replaces the stale post-policy next step with a modeling-focused follow-on after the threshold question is rechecked
+
+**Writes**
+- one bounded threshold-confirmation bundle under `reports/backtests/temporal_multires/<analysis_name>/`
+
+**Current project role**
+- close the current threshold-promotion question with forward fixed-threshold evidence rather than another held-out-only argument
+- determine whether the repo should keep the threshold locked at `0.4288` and return attention to temporal training design
+
 ## `run_temporal_path_exploration_v1.py`
 **Status:** current bounded temporal path-search orchestrator  
 **Purpose:** automate a small, evidence-driven experiment matrix over the current most plausible temporal branches.
