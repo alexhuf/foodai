@@ -1,29 +1,24 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd -- "${SCRIPT_DIR}/.." && pwd)"
-PYTHON_BIN="${PYTHON:-python}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+IMAGE="foodai-codex-temporal:latest"
+CONTAINER_NAME="foodai-operational-refresh"
 
-REFRESH_NAME="simple_loss_daysweeks_v2_operational_refresh_v1"
-REPORT_DIR="${PROJECT_ROOT}/reports/backtests/temporal_multires/${REFRESH_NAME}"
-LATEST_SUMMARY="${REPORT_DIR}/latest_case_summary.md"
-FIRST_READ="${REPORT_DIR}/summary.md"
+mkdir -p "${HOME}/.foodai-codex-home"
 
-cd "${PROJECT_ROOT}"
+docker rm -f "${CONTAINER_NAME}" >/dev/null 2>&1 || true
 
-echo "Running locked operational refresh..."
-"${PYTHON_BIN}" run_temporal_operational_refresh_v1.py --project-root "${PROJECT_ROOT}"
+echo "Running locked operational refresh in Docker..."
 
-echo
-echo "Latest case summary:"
-if [[ -f "${LATEST_SUMMARY}" ]]; then
-  sed -n '1,80p' "${LATEST_SUMMARY}"
-else
-  echo "Missing expected latest summary: ${LATEST_SUMMARY}" >&2
-  exit 1
-fi
-
-echo
-echo "Refresh bundle: ${REPORT_DIR}"
-echo "Read first: ${FIRST_READ}"
+docker run --rm -it \
+  --gpus all \
+  --name "${CONTAINER_NAME}" \
+  --user "$(id -u):$(id -g)" \
+  -e HOME=/home/codex \
+  -v "${HOME}/.foodai-codex-home:/home/codex" \
+  -v "${REPO_ROOT}:/workspace/foodai" \
+  -w /workspace/foodai \
+  "${IMAGE}" \
+  bash -lc 'python run_temporal_operational_refresh_v1.py --project-root /workspace/foodai'
