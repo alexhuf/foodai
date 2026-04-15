@@ -1,0 +1,9 @@
+anchor_id=2026-03-29
+score=0.381743
+locked_decision=negative
+threshold_used=0.4288
+policy_band=below 0.4288
+score_not_calibrated_probability=true
+score_interpretation=ranking / threshold signal only; not a calibrated probability
+recent_cases_written=10
+report_dir=/workspace/foodai/reports/backtests/temporal_multires/simple_loss_daysweeks_v2_operational_scoring_v1

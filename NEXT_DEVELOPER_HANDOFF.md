@@ -461,6 +461,13 @@ Choose one path:
 Operational note:
 - use `run_temporal_path_exploration_v1.py` when the goal is to rerun or extend the bounded path-search loop in a directly comparable way
 - use `train_temporal_multires_flattened_explore_v1.py` when the goal is to inspect stronger flattened classifiers on the same lag-window representation
+- use `run_temporal_operational_refresh_v1.py` when the goal is routine monitoring around the locked winner without retraining:
+  - `python run_temporal_operational_refresh_v1.py --project-root /workspace/foodai`
+  - authoritative refresh bundle: `reports/backtests/temporal_multires/simple_loss_daysweeks_v2_operational_refresh_v1/`
+  - first-read files:
+    - `summary.md`
+    - `latest_case_summary.md`
+    - `watch_checks.md`
 - use `score_temporal_flat_winner_v1.py` when the goal is to score the frozen winner operationally on the latest eligible anchor or a specific `anchor_id` without retraining:
   - `python score_temporal_flat_winner_v1.py --project-root /workspace/foodai`
   - optional recent-history operational report:

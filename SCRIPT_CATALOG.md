@@ -941,6 +941,27 @@ For each script, the goal is to answer:
 - operationalize the frozen flattened ET winner as a usable scorer
 - keep future single-case and batch/history scoring aligned to the same saved model, feature build, and locked threshold policy
 
+## `run_temporal_operational_refresh_v1.py`
+**Status:** current operational refresh stage  
+**Purpose:** wrap the locked scorer in one compact routine-use monitoring bundle without changing the model, threshold, target, or modalities.
+
+**Key features**
+- calls `score_temporal_flat_winner_v1.py` directly so the authoritative scorer output remains the source of truth
+- reads the locked policy bundle plus the existing operational check bundles
+- writes a compact current-state bundle with:
+  - latest case summary
+  - recent-`N` score/decision summary
+  - simple policy wording
+  - lightweight watch checks around score position, recent positive-rate drift, and promotion-zone entry
+- preserves the current reporting structure under `reports/backtests/temporal_multires/<refresh_name>/`
+
+**Writes**
+- one operational refresh bundle under `reports/backtests/temporal_multires/<refresh_name>/`
+
+**Current project role**
+- give operators a single refresh command and a small set of first-read files
+- keep routine monitoring additive and auditable while the winning scorer stays locked
+
 ## `run_temporal_path_exploration_v1.py`
 **Status:** current bounded temporal path-search orchestrator  
 **Purpose:** automate a small, evidence-driven experiment matrix over the current most plausible temporal branches.
