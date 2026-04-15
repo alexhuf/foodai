@@ -219,6 +219,9 @@ This documentation set is split across multiple files on purpose.
 - `NEXT_DEVELOPER_HANDOFF.md`
   - current findings, trusted artifacts, current blockers, exact next steps
 
+- `OPS_RUNBOOK.md`
+  - concise operator-facing refresh commands and locked-winner policy notes
+
 - `generate_repo_inventory.py`
   - self-documenting utility
   - generates a tree and JSON manifest of the current repo
