@@ -962,6 +962,34 @@ For each script, the goal is to answer:
 - give operators a single refresh command and a small set of first-read files
 - keep routine monitoring additive and auditable while the winning scorer stays locked
 
+## `scripts/run_operational_refresh.sh`
+**Status:** current host helper  
+**Purpose:** run the locked operational refresh from Linux / WSL with one repo-root command.
+
+**Key features**
+- computes the repo root from the helper location
+- calls `run_temporal_operational_refresh_v1.py` with only `--project-root`
+- prints the generated latest-case summary to the terminal
+- points the operator to the refresh bundle and first-read `summary.md`
+- does not retrain, change the model, change the threshold, or override policy
+
+**Current project role**
+- make routine host-side operational refresh easier while preserving the locked Python entry point as the source of truth
+
+## `scripts/run_operational_refresh.ps1`
+**Status:** current host helper  
+**Purpose:** run the locked operational refresh from Windows PowerShell with one repo-root command.
+
+**Key features**
+- computes the repo root from the helper location
+- calls `run_temporal_operational_refresh_v1.py` with only `--project-root`
+- prints the generated latest-case summary to the terminal
+- points the operator to the refresh bundle and first-read `summary.md`
+- does not retrain, change the model, change the threshold, or override policy
+
+**Current project role**
+- provide the Windows host equivalent of the Linux / WSL refresh helper
+
 ## `run_temporal_path_exploration_v1.py`
 **Status:** current bounded temporal path-search orchestrator  
 **Purpose:** automate a small, evidence-driven experiment matrix over the current most plausible temporal branches.

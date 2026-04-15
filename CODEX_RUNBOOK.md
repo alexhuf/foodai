@@ -104,3 +104,18 @@ After the container starts, verify the runtime with:
 - `python build_multires_sequence_dataset_v2.py --help`
 - `python train_temporal_multires_simple_baselines_v1.py --help`
 - `python train_temporal_multires_models_v4_1.py --help`
+
+## 9. Host operational refresh helpers
+Use these helpers when the goal is routine operational monitoring of the locked temporal winner from the host environment.
+
+Linux / WSL from the repo root:
+- `./scripts/run_operational_refresh.sh`
+
+Windows PowerShell from the repo root:
+- `.\scripts\run_operational_refresh.ps1`
+
+Both helpers only call:
+- `python run_temporal_operational_refresh_v1.py --project-root <repo-root>`
+
+They do not retrain, change the model, change the locked threshold, or override the operational policy. After the refresh, read first:
+- `reports/backtests/temporal_multires/simple_loss_daysweeks_v2_operational_refresh_v1/summary.md`

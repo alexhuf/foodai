@@ -463,6 +463,10 @@ Operational note:
 - use `train_temporal_multires_flattened_explore_v1.py` when the goal is to inspect stronger flattened classifiers on the same lag-window representation
 - use `run_temporal_operational_refresh_v1.py` when the goal is routine monitoring around the locked winner without retraining:
   - `python run_temporal_operational_refresh_v1.py --project-root /workspace/foodai`
+  - host Linux / WSL helper from repo root:
+    - `./scripts/run_operational_refresh.sh`
+  - host Windows PowerShell helper from repo root:
+    - `.\scripts\run_operational_refresh.ps1`
   - authoritative refresh bundle: `reports/backtests/temporal_multires/simple_loss_daysweeks_v2_operational_refresh_v1/`
   - first-read files:
     - `summary.md`
