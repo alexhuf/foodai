@@ -185,12 +185,14 @@ At a high level, the project now contains these major layers:
 - GRU / TCN / transformer-capable trainer
 - diagnostic ablation trainer
 - first temporal smoke tests
+- bounded flattened-path exploration over the same `days,weeks` loss target
+- bounded flattened follow-up confirming extra trees as the preferred surviving flattened family
 
 ---
 
 ## 5. Current state in one paragraph
 
-The project has **proven nontrivial signal exists** in multiple anchor branches, especially the daily weight-direction branch and the weekly regime branch. The meal modality was recovered correctly after rejecting an earlier telemetry-grid false positive. A full multi-resolution sequence dataset now exists, conservative flattened temporal baselines have set a strong `days,weeks` binary-loss floor, and bounded GRU / TCN / transformer smoke comparisons have now been run. The current blocker is **not data availability**, but **temporal model performance**: neural temporal runs remain well below both the anchor branches and the current simple temporal floor. The project is therefore in the stage:
+The project has **proven nontrivial signal exists** in multiple anchor branches, especially the daily weight-direction branch and the weekly regime branch. The meal modality was recovered correctly after rejecting an earlier telemetry-grid false positive. A full multi-resolution sequence dataset now exists, conservative flattened temporal baselines have set a strong `days,weeks` binary-loss floor, bounded GRU / TCN / transformer smoke comparisons have been run, and a later bounded path-exploration loop plus a direct follow-up pilot confirmed that stronger flattened tree models still beat the weak neural ceiling while `et_balanced` remains the only clearly preferred surviving flattened challenger. The current blocker is **not data availability**, but **temporal model performance**: neural temporal runs remain well below both the anchor branches and the current simple temporal floor, and even the best flattened follow-up still does not clear that floor. The project is therefore in the stage:
 
 > **diagnose which target / modality / architecture combination is genuinely learnable in temporal form before committing to long multi-hour or multi-day neural runs.**
 

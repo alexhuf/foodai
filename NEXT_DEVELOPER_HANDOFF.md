@@ -139,6 +139,113 @@ Interpretation:
 - transformer remained effectively unusable in this smoke setup
 - probability dispersion is still extremely narrow for GRU and TCN, so the old collapse problem remains active
 
+### 4.5 What the bounded path-exploration loop showed
+The broader bounded exploration loop has now been run via:
+- `run_temporal_path_exploration_v1.py`
+
+New directly comparable outcomes:
+- `flat_loss_daysweeks_explore_v1:et_balanced`
+  - balanced accuracy = `0.8194`
+  - ROC AUC = `0.8611`
+  - `prob_std` = `0.0748`
+- `flat_loss_daysweeks_explore_v1:hgb_depth3`
+  - balanced accuracy = `0.6806`
+  - ROC AUC = `0.8056`
+  - `prob_std` = `0.0656`
+- `flat_loss_daysweeks_explore_v1:rf_balanced`
+  - balanced accuracy = `0.6944`
+  - ROC AUC = `0.7963`
+  - `prob_std` = `0.0462`
+- `flat_loss_daysweeks_explore_v1:logreg_balanced_c5`
+  - balanced accuracy = `0.7222`
+  - ROC AUC = `0.6944`
+  - `prob_std` = `0.3304`
+- `flat_loss_daysweeks_explore_v1:mlp_small`
+  - balanced accuracy = `0.6111`
+  - ROC AUC = `0.4352`
+- `flat_loss_daysweeks_explore_v1:mlp_wide`
+  - balanced accuracy = `0.5000`
+  - ROC AUC = `0.6481`
+  - effectively one-class at the tuned threshold
+- `gru_loss_daysweeks_bce_smoke_v1`
+  - balanced accuracy = `0.5000`
+  - ROC AUC = `0.6852`
+  - `prob_std` = `0.0171`
+- `tcn_loss_daysweeks_bce_smoke_v1`
+  - balanced accuracy = `0.4861`
+  - ROC AUC = `0.5278`
+  - `prob_std` = `0.0094`
+- `tcn_loss_daysweeks_bce_deep_smoke_v1`
+  - balanced accuracy = `0.5000`
+  - ROC AUC = `0.2870`
+  - tuned threshold collapsed to all-negative
+
+Interpretation:
+- the strongest surviving next-step direction is still flattened tabular `days,weeks` modeling, not neural sequence modeling
+- extra trees remained the best bounded direct challenger to the current simple floor, but it still did **not** beat `simple_loss_daysweeks_v2`
+- histogram boosting also survived the bounded criteria and is the clearest non-ET alternate path worth a follow-on pilot
+- flattened MLP did not justify promotion
+- cheap BCE-only GRU improved ROC AUC versus the older weak neural references, but balanced accuracy stayed stuck at `0.5000`, so it is still not a credible pilot candidate
+- cheap BCE-only TCN variants remained collapsed or worse than the old TCN smoke
+
+### 4.6 What the bounded flattened follow-up pilot showed
+The requested narrowed follow-up has now been run via:
+- `train_temporal_multires_flattened_explore_v1.py --project-root /workspace/foodai --run-name flat_loss_daysweeks_followup_pilot_v1 --candidate-models et_balanced,hgb_depth3`
+
+Directly comparable follow-up outcomes:
+- `flat_loss_daysweeks_followup_pilot_v1:et_balanced`
+  - balanced accuracy = `0.8194`
+  - ROC AUC = `0.8611`
+  - `prob_std` = `0.0748`
+- `flat_loss_daysweeks_followup_pilot_v1:hgb_depth3`
+  - balanced accuracy = `0.6806`
+  - ROC AUC = `0.8056`
+  - `prob_std` = `0.0656`
+
+Interpretation:
+- neither follow-up candidate matched or beat `simple_loss_daysweeks_v2`
+- the follow-up exactly reproduced the earlier ranking and metric gap, so the flattened tree ordering now looks stable rather than incidental
+- `et_balanced` is now the clearly preferred flattened follow-on family
+- `hgb_depth3` should be deprioritized because it remained materially worse than `et_balanced` on both balanced accuracy and ROC AUC in the direct retry
+
+### 4.7 What the bounded winner-analysis and robustness pass showed
+The requested winner-analysis bundle has now been run via:
+- `analyze_temporal_flat_winner_v1.py --project-root /workspace/foodai`
+
+Bundle location:
+- `reports/backtests/temporal_multires/simple_loss_daysweeks_v2_winner_analysis_v1/`
+
+Most important outcomes:
+- `simple_loss_daysweeks_v2` remains the best shared-valid test result among the directly requested references
+  - balanced accuracy = `0.8611`
+  - ROC AUC = `0.9167`
+- direct strict comparison still ranks:
+  1. `simple_loss_daysweeks_v2`
+  2. `flat_loss_daysweeks_followup_pilot_v1:et_balanced`
+  3. `tcn_loss_daysweeks_compare_smoke_v1_check`
+  4. `gru_loss_daysweeks_smoke_v4_1`
+- the saved winner is high-recall but false-positive-heavy at the selected validation threshold
+  - test confusion = `TN=26, FP=10, FN=0, TP=3`
+  - there were no false negatives on the valid 39-row test slice
+- the threshold sweep shows the selected validation threshold is not test-optimal
+  - saved threshold = `0.4288`
+  - best test balanced accuracy in the sweep occurs around `0.4603`
+  - this means ranking is strong, but the operating point is sensitive
+- repeated-seed retrains of the same ET config were directionally stable but not perfectly tight
+  - balanced accuracy mean/std = `0.7972 +/- 0.0722`
+  - balanced accuracy range = `0.6667` to `0.8611`
+  - ROC AUC mean/std = `0.8519 +/- 0.0628`
+- feature importance is dominated by `days` rather than `weeks`
+  - summed impurity importance: `days = 0.6789`, `weeks = 0.3211`
+  - strongest grouped drivers include weekend/day-of-week structure, recent-week recency, restaurant-meal intensity, weather, and calorie-budget gap features
+- the neural comparison files still contain 7 test rows whose target is missing in `anchors.csv`
+  - use the shared-valid comparison table in the winner-analysis bundle for strict apples-to-apples comparison
+
+Interpretation:
+- `simple_loss_daysweeks_v2` is now strong enough to treat as the current operational best flattened temporal path
+- that does **not** mean the threshold is operationally settled or that the ET family is fully robust to seed/decision-boundary variance
+- the next bounded development step should therefore stay on the same target/family/modality path, but probe a nearby window choice rather than rerunning the exact same config again
+
 ---
 
 ## 5. Most likely causes of current temporal underperformance
@@ -153,7 +260,8 @@ These are hypotheses, not final truths, but they are the best current explanatio
    - GRU does not appear to be the right inductive bias here
    - TCN improved slightly over GRU in the bounded comparison, but not enough to change the project state
    - the current transformer smoke setup is not yet viable
-   - a simpler flattened-sequence MLP or boosted-tree on lagged summaries may still be the stronger near-term class
+   - the new bounded path search confirms flattened boosted-tree models are still the strongest near-term class
+   - the flattened MLP path did not validate as the next-best direction
 
 3. **Weak temporal signal relative to engineered summaries**
    - daily anchors may already compress the useful structure efficiently
@@ -169,44 +277,48 @@ These are hypotheses, not final truths, but they are the best current explanatio
 ## 6. Recommended next steps
 
 ### Highest-priority next work
-Use the new simple baseline results as the comparison floor before any further temporal escalation.
+Use the new simple baseline results as the comparison floor and treat bounded flattened-tree refinement as the leading next path before any further neural escalation.
 
 Current empirical floor:
 1. `simple_loss_daysweeks_v2`
 2. `simple_loss_days_v2`
 
+Current best directly comparable follow-on candidate:
+1. `flat_loss_daysweeks_explore_v1:et_balanced`
+
 Why:
-- these are now the strongest temporal-style results currently recorded in-repo
-- they show the current GRU branch is underperforming a more conservative baseline on the same dataset
-- they make binary loss the cleanest target for the next architecture comparison
+- this is now the strongest non-anchor temporal-style result currently recorded in-repo after a direct follow-up retry
+- they show the current neural branch is still underperforming a more conservative baseline on the same dataset
+- they make binary loss on flattened `days,weeks` the cleanest target for the next bounded comparison
+- they collapse the earlier shortlist to one clearly preferred flattened family
 
 ### After that
 Choose one path:
 
-#### Path A — continue with temporal ablations
-- if continuing neural work, treat `tcn_loss_daysweeks_compare_smoke_v1_check` as the current neural ceiling and improve from there
-- do not widen scope to meals or regression until a neural run materially improves on the current TCN smoke
-- only revisit transformer after there is a concrete reason the setup failure was optimization-specific rather than signal-limited
+#### Path A — flattened tabular follow-on
+- keep the follow-on centered on `et_balanced`
+- keep target = `y_next_weight_loss_flag`
+- keep modalities = `days,weeks`
+- do not widen scope to meals or regression
+- use `simple_loss_daysweeks_v2_winner_analysis_v1` to read threshold sensitivity and dominant lag groups before touching the next training command
+- use the exploration bundle to rank any follow-on directly against:
+  - `simple_loss_daysweeks_v2`
+  - `gru_loss_daysweeks_smoke_v4_1`
+  - `tcn_loss_daysweeks_compare_smoke_v1_check`
+  - `tcn_loss_daysweeks_compare_pilot_v1`
+- treat `hgb_depth3` as deprioritized unless a later bounded window-sensitivity check gives a concrete reason to revive it
+- exact next model-development command:
+  - `python train_temporal_multires_flattened_explore_v1.py --project-root /workspace/foodai --run-name flat_loss_daysweeks_et_windowpilot_v1 --target y_next_weight_loss_flag --modalities days,weeks --candidate-models et_balanced --days-window 7 --weeks-window 2`
+  - reason: keep the same winning family/target/modality mix, avoid a plain confirmation rerun, and test whether a slightly shorter weekly context stabilizes the false-positive-heavy operating point without widening scope
 
-#### Path B — simpler sequence baseline
-A conservative non-recurrent baseline path now exists via:
-- `train_temporal_multires_simple_baselines_v2.py`
-
-Current completed runs:
-- `simple_loss_days_v2`
-- `simple_loss_daysweeks_v2`
-- `simple_delta_days_v2`
-- `simple_delta_daysweeks_v2`
-
-What they established:
-- keep `days,weeks` as the preferred conservative baseline for `y_next_weight_loss_flag`
-- do not treat `y_next_weight_delta_lb` as the leading temporal target yet
-- any new GRU / TCN / transformer smoke should be compared directly against `simple_loss_daysweeks_v2`
-
-This path is intentionally more data-efficient than the current neural branch and should be checked before any broader temporal escalation.
+#### Path B — continue neural ablations only after a concrete reason appears
+- if continuing neural work, use `gru_loss_daysweeks_bce_smoke_v1` only as a diagnostic sign that ranking may be salvageable, not as a pilot candidate
+- treat `tcn_loss_daysweeks_compare_smoke_v1_check` as the current TCN neural ceiling until a new run clears it on both ranking and balanced accuracy
+- do not revisit transformer until there is a concrete optimization reason rather than a generic architecture retry
 
 Operational note:
-- use `train_temporal_multires_simple_baselines_v2.py` for future binary-only baseline runs because it no longer trains the default regression target unless regression is explicitly requested
+- use `run_temporal_path_exploration_v1.py` when the goal is to rerun or extend the bounded path-search loop in a directly comparable way
+- use `train_temporal_multires_flattened_explore_v1.py` when the goal is to inspect stronger flattened classifiers on the same lag-window representation
 
 ---
 
@@ -249,6 +361,9 @@ Only escalate to long real pilots once a smoke-test configuration clears somethi
 - `train_temporal_multires_models_v4_1.py`
 - `train_temporal_multires_simple_baselines_v2.py`
 - `train_temporal_multires_neural_compare_v1.py`
+- `train_temporal_multires_flattened_explore_v1.py`
+- `analyze_temporal_flat_winner_v1.py`
+- `run_temporal_path_exploration_v1.py`
 
 ### Current focused neural comparison entry point
 Use `train_temporal_multires_neural_compare_v1.py` when the goal is to compare neural families on the current best-bounded temporal setup only:

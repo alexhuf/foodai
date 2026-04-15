@@ -820,6 +820,60 @@ For each script, the goal is to answer:
 - provide the next bounded neural architecture comparison without widening scope to meals, regression, or multi-head training
 - force future neural smoke tests and pilots to be read against the current simple temporal floor
 
+## `train_temporal_multires_flattened_explore_v1.py`
+**Status:** current bounded flattened-path explorer  
+**Purpose:** run a wider but still cheap set of flattened `days,weeks` binary-loss classifiers on the same lag-window representation.
+
+**Key features**
+- reuses the multires lag-window feature build from the simple baseline path
+- evaluates stronger direct comparators such as extra trees, random forest, histogram boosting, and small MLP variants
+- writes candidate rankings plus the selected best-model artifact under `reports/backtests/temporal_multires/<run_name>/`
+- keeps outputs directly comparable to `simple_loss_daysweeks_v2`
+
+**Current project role**
+- test whether better flattened classifiers, rather than recurrent sequence models, are the most plausible next bounded path
+- prune the flattened MLP hypothesis quickly against stronger tree references
+
+## `analyze_temporal_flat_winner_v1.py`
+**Status:** current diagnostic winner-analysis stage  
+**Purpose:** inspect the saved `simple_loss_daysweeks_v2` extra-trees winner without rerunning the same plain confirmation training path.
+
+**Key features**
+- rebuilds the exact flattened `days,weeks` feature frame from the multires dataset
+- loads the saved winner artifact and emits impurity-based feature importance plus grouped summaries
+- runs a bounded permutation-importance pass on the top-ranked winner features
+- writes threshold-sweep, confusion-style, false-positive/false-negative, and probability-diagnostic tables
+- compares the winner against:
+  - `flat_loss_daysweeks_followup_pilot_v1`
+  - `gru_loss_daysweeks_smoke_v4_1`
+  - `tcn_loss_daysweeks_compare_smoke_v1_check`
+- adds a cheap repeated-seed robustness check for the same ET config
+
+**Writes**
+- one bounded analysis bundle under `reports/backtests/temporal_multires/<analysis_run_name>/`
+
+**Current project role**
+- determine whether `simple_loss_daysweeks_v2` is stable enough to treat as the current operational best flattened temporal path
+- surface the top drivers and failure modes before any nearby ET window or split follow-on
+
+## `run_temporal_path_exploration_v1.py`
+**Status:** current bounded temporal path-search orchestrator  
+**Purpose:** automate a small, evidence-driven experiment matrix over the current most plausible temporal branches.
+
+**Key features**
+- writes an explicit experiment plan with promotion criteria and stop rules
+- executes flattened and neural smoke candidates in a single loop
+- ranks all explored paths against the required reference runs:
+  - `simple_loss_daysweeks_v2`
+  - `gru_loss_daysweeks_smoke_v4_1`
+  - `tcn_loss_daysweeks_compare_smoke_v1_check`
+  - `tcn_loss_daysweeks_compare_pilot_v1`
+- emits one aggregate ranking bundle under `reports/backtests/temporal_multires/temporal_path_explore_v1/`
+
+**Current project role**
+- identify the strongest next bounded direction without widening scope to meals, regression, or long pilots
+- make path pruning auditable rather than conversational
+
 ---
 
 # 14. Codex runtime support

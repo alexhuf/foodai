@@ -193,11 +193,12 @@ The sequence pack now has:
 - aligned anchor rows
 
 ### 5.4 Temporal pilots are not yet competitive
-The first GRU temporal runs stabilized after debugging, and a later bounded GRU / TCN / transformer comparison was added, but the neural family still underperforms both anchor models and the current simple temporal floor.
+The first GRU temporal runs stabilized after debugging, and later bounded GRU / TCN / transformer and flattened-tree comparisons were added, but the neural family still underperforms both anchor models and the current simple temporal floor.
 That means:
 - do not discard the anchor branch
 - use anchors as the benchmark
 - use `simple_loss_daysweeks_v2` as the conservative floor for bounded temporal comparisons
+- treat `et_balanced` on flattened `days,weeks` as the currently preferred non-neural follow-on family
 
 ---
 
@@ -255,8 +256,9 @@ The most defensible next order is:
 1. temporal diagnostic ablations
 2. identify the best single target
 3. identify the best modality mix
-4. compare GRU / TCN / transformer
-5. only then run a longer GPU pilot
+4. on the current `loss + days,weeks` path, keep bounded flattened follow-ons centered on `et_balanced` until something beats the simple floor
+5. compare GRU / TCN / transformer only when a concrete bounded result justifies returning to them
+6. only then run a longer GPU pilot
 
 If temporal models continue to underperform, consider a hybrid path:
 - anchor models for decision reliability

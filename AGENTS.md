@@ -75,3 +75,15 @@ Commit only when:
 - docs are updated if project state changed
 
 Do not open PRs automatically unless explicitly instructed.
+
+## 9. Git management policy
+- Always start repo work by running:
+  - `git status --short`
+  - `git log --oneline -n 5`
+- Never use `git add .`
+- Stage files in logical groups so code, docs, and report bundles remain auditable.
+- Exclude `models/temporal_multires/` local artifacts by default unless the user explicitly asks to version them.
+- Before any commit closeout, include a short `Git Closeout` section that states:
+  - the exact staging plan
+  - the proposed commit message
+  - the expected post-commit status
