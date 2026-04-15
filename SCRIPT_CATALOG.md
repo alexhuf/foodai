@@ -874,6 +874,25 @@ For each script, the goal is to answer:
 - test whether the current ET winner remains credible under alternate rolling split choices
 - decide whether false-positive-heavy threshold behavior is stable enough to justify promoting a new operating point above `0.4288`
 
+## `analyze_temporal_flat_winner_policy_v1.py`
+**Status:** current diagnostic policy-bundle stage  
+**Purpose:** turn the saved winner plus the two existing operational checks into one conservative operational policy bundle without retraining, changing family, or promoting the threshold.
+
+**Key features**
+- reads the locked winner artifacts for `simple_loss_daysweeks_v2`
+- keeps the operating threshold fixed at `0.4288`
+- records the candidate promotion zone at `0.44` to `0.455`
+- writes a compact decision-band table so the score can be used as a ranking/threshold signal rather than a calibrated probability
+- states the exact evidence still required before any upward threshold promotion is allowed
+- records the exact next bounded follow-on command after the policy layer is added
+
+**Writes**
+- one bounded operational-policy bundle under `reports/backtests/temporal_multires/<analysis_name>/`
+
+**Current project role**
+- freeze the current winner into an auditable operational policy artifact while keeping the threshold locked
+- separate “use now” policy from “promotion later” criteria so future developers do not over-read the favorable held-out slice
+
 ## `run_temporal_path_exploration_v1.py`
 **Status:** current bounded temporal path-search orchestrator  
 **Purpose:** automate a small, evidence-driven experiment matrix over the current most plausible temporal branches.

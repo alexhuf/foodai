@@ -283,6 +283,30 @@ Interpretation:
   - keep the ET family
   - test a small window or split variant before adopting a new operating threshold
 
+### 4.9 What the operational policy bundle now says
+The requested conservative policy layer has now been added via:
+- `analyze_temporal_flat_winner_policy_v1.py --project-root /workspace/foodai`
+
+Bundle location:
+- `reports/backtests/temporal_multires/simple_loss_daysweeks_v2_operational_policy_v1/`
+
+Most important outcomes:
+- the operational threshold remains locked at `0.4288`
+- the candidate promotion zone remains `0.44` to `0.455`
+- the score is now framed explicitly as a ranking/threshold signal, not a calibrated probability
+- the new decision bands are:
+  - `< 0.4288` = below current action threshold
+  - `0.4288` to `< 0.44` = current positive signal under the locked policy
+  - `0.44` to `0.455` = candidate promotion zone, but still unpromoted
+  - `> 0.455` = stronger positive rank position, still governed by the same locked threshold policy
+- the bundle makes the promotion rule explicit:
+  - do **not** move above `0.4288` until one specific threshold in `0.44` to `0.455` reproduces `FN=0`, improves held-out balanced accuracy above `0.8611`, and reduces false positives below `10`, with the same upward-threshold claim supported by an additional additive time-aware check rather than only the current favorable held-out slice
+
+Interpretation:
+- the project now has an auditable operational policy artifact for the current winner
+- this is a policy freeze, not a model-family change and not a threshold promotion
+- the next command should continue the nearby same-family window check rather than reopen threshold promotion prematurely
+
 ---
 
 ## 5. Most likely causes of current temporal underperformance
@@ -329,6 +353,7 @@ Why:
 - they make binary loss on flattened `days,weeks` the cleanest target for the next bounded comparison
 - they collapse the earlier shortlist to one clearly preferred flattened family
 - the new split-mimic check supports a nearby higher threshold zone on the current eval slice, but not yet enough rolling stability to promote it
+- the new policy bundle locks that interpretation into an explicit operational artifact so future work does not blur current use and future promotion criteria
 
 ### After that
 Choose one path:
@@ -340,6 +365,10 @@ Choose one path:
 - do not widen scope to meals or regression
 - use `simple_loss_daysweeks_v2_winner_analysis_v1` to read threshold sensitivity and dominant lag groups before touching the next training command
 - use `simple_loss_daysweeks_v2_operational_check_splitmimic_v1` to read how threshold behavior changes under the shorter rolling split before promoting any new operating point
+- use `simple_loss_daysweeks_v2_operational_policy_v1` as the authoritative current operating policy:
+  - threshold stays at `0.4288`
+  - the score is ranking-oriented, not probability-calibrated
+  - `0.44` to `0.455` stays only a candidate promotion zone until a new additive robustness check clears it
 - use the exploration bundle to rank any follow-on directly against:
   - `simple_loss_daysweeks_v2`
   - `gru_loss_daysweeks_smoke_v4_1`
