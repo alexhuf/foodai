@@ -463,6 +463,8 @@ Operational note:
 - use `train_temporal_multires_flattened_explore_v1.py` when the goal is to inspect stronger flattened classifiers on the same lag-window representation
 - use `score_temporal_flat_winner_v1.py` when the goal is to score the frozen winner operationally on the latest eligible anchor or a specific `anchor_id` without retraining:
   - `python score_temporal_flat_winner_v1.py --project-root /workspace/foodai`
+  - optional recent-history operational report:
+    - `python score_temporal_flat_winner_v1.py --project-root /workspace/foodai --recent-n 10`
   - authoritative scoring bundle: `reports/backtests/temporal_multires/simple_loss_daysweeks_v2_operational_scoring_v1/`
   - authoritative winner artifacts remain:
     - `models/temporal_multires/simple_loss_daysweeks_v2/y_next_weight_loss_flag__et.joblib`

@@ -42,13 +42,7 @@ def policy_band(score: float, threshold: float, promotion_low: float, promotion_
 
 
 def choose_latest_eligible_row(score_df: pd.DataFrame, enabled_modalities: List[str]) -> pd.Series:
-    eligible_mask = pd.Series(True, index=score_df.index)
-    for modality in enabled_modalities:
-        col = f"has_{modality}"
-        if col in score_df.columns:
-            eligible_mask &= pd.to_numeric(score_df[col], errors="coerce").fillna(0.0) > 0
-
-    eligible = score_df.loc[eligible_mask].copy()
+    eligible = filter_eligible_rows(score_df=score_df, enabled_modalities=enabled_modalities)
     if eligible.empty:
         eligible = score_df.copy()
 
@@ -60,6 +54,62 @@ def choose_latest_eligible_row(score_df: pd.DataFrame, enabled_modalities: List[
     return eligible.iloc[-1]
 
 
+def filter_eligible_rows(score_df: pd.DataFrame, enabled_modalities: List[str]) -> pd.DataFrame:
+    eligible_mask = pd.Series(True, index=score_df.index)
+    for modality in enabled_modalities:
+        col = f"has_{modality}"
+        if col in score_df.columns:
+            eligible_mask &= pd.to_numeric(score_df[col], errors="coerce").fillna(0.0) > 0
+    return score_df.loc[eligible_mask].copy()
+
+
+def sort_history_rows(score_df: pd.DataFrame, ascending: bool) -> pd.DataFrame:
+    history = score_df.copy()
+    if "anchor_period_start" in history.columns:
+        history["_sort_ts"] = pd.to_datetime(history["anchor_period_start"], errors="coerce")
+    else:
+        history["_sort_ts"] = pd.to_datetime(history["anchor_id"], errors="coerce")
+    history = history.sort_values(by=["_sort_ts", "anchor_id"], ascending=[ascending, ascending], na_position="last")
+    return history.drop(columns=["_sort_ts"], errors="ignore")
+
+
+def decision_label(value: int) -> str:
+    return "positive" if int(value) == 1 else "negative"
+
+
+def format_recent_cases_markdown(recent_df: pd.DataFrame, recent_n: int) -> List[str]:
+    if recent_df.empty:
+        return [f"## Recent Cases ({recent_n})", "", "_No eligible recent cases found._", ""]
+
+    display_cols = [
+        "anchor_id",
+        "anchor_period_start",
+        "score",
+        "decision_locked_label",
+        "policy_band",
+        "locked_threshold",
+    ]
+    display_df = recent_df[[c for c in display_cols if c in recent_df.columns]].copy()
+    if "score" in display_df.columns:
+        display_df["score"] = display_df["score"].map(lambda x: f"{float(x):.6f}")
+    if "locked_threshold" in display_df.columns:
+        display_df["locked_threshold"] = display_df["locked_threshold"].map(lambda x: f"{float(x):.4f}")
+
+    headers = list(display_df.columns)
+    header_row = "| " + " | ".join(headers) + " |"
+    separator_row = "| " + " | ".join(["---"] * len(headers)) + " |"
+    body_rows = []
+    for _, row in display_df.iterrows():
+        body_rows.append("| " + " | ".join("" if pd.isna(v) else str(v) for v in row.tolist()) + " |")
+
+    lines = [f"## Recent Cases ({recent_n})", ""]
+    lines.append(header_row)
+    lines.append(separator_row)
+    lines.extend(body_rows)
+    lines.append("")
+    return lines
+
+
 def build_summary_markdown(
     selected_row: pd.Series,
     report_dir: Path,
@@ -67,9 +117,13 @@ def build_summary_markdown(
     promotion_low: float,
     promotion_high: float,
     selected_anchor_mode: str,
+    recent_df: pd.DataFrame | None = None,
+    recent_n: int = 0,
 ) -> str:
     lines = [
         "# Operational Scoring: simple_loss_daysweeks_v2",
+        "",
+        "## Selected Case",
         "",
         f"- selected_anchor_mode: `{selected_anchor_mode}`",
         f"- anchor_id: `{selected_row['anchor_id']}`",
@@ -82,8 +136,10 @@ def build_summary_markdown(
             "- modalities: `days,weeks`",
             "- model family: `flattened ExtraTrees`",
             f"- score: `{selected_row['score']:.6f}`",
-            f"- locked threshold decision: `{'positive' if int(selected_row['decision_locked']) == 1 else 'negative'}` at `{threshold:.4f}`",
+            f"- locked decision: `{decision_label(selected_row['decision_locked'])}`",
+            f"- threshold used: `{threshold:.4f}`",
             f"- policy band: `{selected_row['policy_band']}`",
+            "- score is not a calibrated probability: `true`",
             "- score interpretation: `ranking / threshold signal only; not a calibrated probability`",
             "",
             "## Policy",
@@ -100,6 +156,14 @@ def build_summary_markdown(
             f"- scoring manifest: `{report_dir / 'scoring_manifest.json'}`",
         ]
     )
+    if recent_df is not None and recent_n > 0:
+        lines.extend(
+            [
+                f"- recent cases CSV: `{report_dir / 'recent_cases.csv'}`",
+                f"- recent cases Markdown: `{report_dir / 'recent_cases.md'}`",
+            ]
+        )
+        lines.extend([""] + format_recent_cases_markdown(recent_df=recent_df, recent_n=recent_n))
     return "\n".join(lines) + "\n"
 
 
@@ -123,6 +187,12 @@ def main() -> None:
         help="Output report bundle name for this scorer run.",
     )
     parser.add_argument("--anchor-id", default="", help="Optional exact anchor_id to score and select.")
+    parser.add_argument(
+        "--recent-n",
+        type=int,
+        default=0,
+        help="Optional count of latest eligible cases to write as a compact operational recent-history report.",
+    )
     args = parser.parse_args()
 
     project_root = Path(args.project_root).expanduser().resolve()
@@ -177,6 +247,7 @@ def main() -> None:
     score_df["score"] = score
     score_df["locked_threshold"] = threshold
     score_df["decision_locked"] = (score_df["score"] >= threshold).astype(int)
+    score_df["decision_locked_label"] = score_df["decision_locked"].map(decision_label)
     score_df["policy_band"] = score_df["score"].map(
         lambda x: policy_band(
             score=float(x),
@@ -186,6 +257,7 @@ def main() -> None:
         )
     )
     score_df["score_not_calibrated_probability"] = True
+    score_df["threshold_used"] = threshold
 
     selected_anchor_mode = "latest_eligible"
     if args.anchor_id:
@@ -205,7 +277,9 @@ def main() -> None:
         DEFAULT_TARGET,
         "score",
         "locked_threshold",
+        "threshold_used",
         "decision_locked",
+        "decision_locked_label",
         "policy_band",
         "score_not_calibrated_probability",
     ]
@@ -214,8 +288,19 @@ def main() -> None:
         if col in score_df.columns:
             history_cols.append(col)
     history_cols = [c for c in history_cols if c in score_df.columns]
-    history_df = score_df[history_cols].sort_values(by=["anchor_period_start", "anchor_id"], na_position="last")
+    history_df = sort_history_rows(score_df[history_cols], ascending=True)
     history_df.to_csv(scoring_dir / "history_scores.csv", index=False)
+
+    recent_df = None
+    if args.recent_n > 0:
+        recent_history_source = filter_eligible_rows(score_df=score_df, enabled_modalities=enabled_modalities)
+        if recent_history_source.empty:
+            recent_history_source = score_df.copy()
+        recent_df = sort_history_rows(recent_history_source[history_cols], ascending=False).head(args.recent_n).copy()
+        recent_df.to_csv(scoring_dir / "recent_cases.csv", index=False)
+        recent_md_lines = [f"# Recent Operational Cases: simple_loss_daysweeks_v2", ""]
+        recent_md_lines.extend(format_recent_cases_markdown(recent_df=recent_df, recent_n=args.recent_n))
+        (scoring_dir / "recent_cases.md").write_text("\n".join(recent_md_lines) + "\n", encoding="utf-8")
 
     selected_payload = {
         "selected_anchor_mode": selected_anchor_mode,
@@ -227,8 +312,11 @@ def main() -> None:
         "target_observed_value": json_safe_value(selected_row.get(DEFAULT_TARGET)),
         "score": float(selected_row["score"]),
         "locked_threshold": threshold,
+        "threshold_used": threshold,
         "decision_locked": bool(int(selected_row["decision_locked"])),
+        "decision_locked_label": str(selected_row["decision_locked_label"]),
         "policy_band": str(selected_row["policy_band"]),
+        "score_not_calibrated_probability": True,
         "score_interpretation": "ranking / threshold signal only; not a calibrated probability",
         "modalities": enabled_modalities,
         "windows": windows,
@@ -267,6 +355,12 @@ def main() -> None:
             "summary_md": str(scoring_dir / "summary.md"),
         },
     }
+    if args.recent_n > 0:
+        scoring_manifest["recent_history"] = {
+            "recent_n": int(args.recent_n),
+            "recent_cases_csv": str(scoring_dir / "recent_cases.csv"),
+            "recent_cases_md": str(scoring_dir / "recent_cases.md"),
+        }
     (scoring_dir / "scoring_manifest.json").write_text(json.dumps(scoring_manifest, indent=2), encoding="utf-8")
     (scoring_dir / "summary.md").write_text(
         build_summary_markdown(
@@ -276,15 +370,21 @@ def main() -> None:
             promotion_low=promotion_low,
             promotion_high=promotion_high,
             selected_anchor_mode=selected_anchor_mode,
+            recent_df=recent_df,
+            recent_n=args.recent_n,
         ),
         encoding="utf-8",
     )
 
     print(f"anchor_id={selected_payload['anchor_id']}")
     print(f"score={selected_payload['score']:.6f}")
-    print(f"decision_locked={'positive' if selected_payload['decision_locked'] else 'negative'}")
+    print(f"locked_decision={selected_payload['decision_locked_label']}")
+    print(f"threshold_used={selected_payload['threshold_used']:.4f}")
     print(f"policy_band={selected_payload['policy_band']}")
+    print("score_not_calibrated_probability=true")
     print("score_interpretation=ranking / threshold signal only; not a calibrated probability")
+    if args.recent_n > 0:
+        print(f"recent_cases_written={min(args.recent_n, len(recent_df)) if recent_df is not None else 0}")
     print(f"report_dir={scoring_dir}")
 
 

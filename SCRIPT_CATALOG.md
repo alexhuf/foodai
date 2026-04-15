@@ -926,6 +926,7 @@ For each script, the goal is to answer:
 - loads the authoritative winner artifact plus the locked policy files
 - scores every anchor cheaply and writes a compact history-scoring table
 - selects either an explicit `anchor_id` or the latest eligible anchor row for single-case operational output
+- can also write a compact latest-`N` eligible recent-cases report for routine operational review via `--recent-n`
 - emits the locked threshold decision and the current policy band:
   - below `0.4288`
   - `0.4288` to `<0.44`
