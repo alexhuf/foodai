@@ -188,13 +188,19 @@ At a high level, the project now contains these major layers:
 - bounded flattened-path exploration over the same `days,weeks` loss target
 - bounded flattened follow-up confirming extra trees as the preferred surviving flattened family
 
+### Layer G — First bounded planning / recommendation layer
+- observed-template horizon scenario search
+- robustness scoring across step-count, weekday/weekend, seasonal, and recent-intake perturbations
+- immediate next-meal scoring from observed meal records
+- ranked report bundles under `reports/backtests/meal_scenario_planning/`
+
 ---
 
 ## 5. Current state in one paragraph
 
-The project has **proven nontrivial signal exists** in multiple anchor branches, especially the daily weight-direction branch and the weekly regime branch. The meal modality was recovered correctly after rejecting an earlier telemetry-grid false positive. A full multi-resolution sequence dataset now exists, conservative flattened temporal baselines have set a strong `days,weeks` binary-loss floor, bounded GRU / TCN / transformer smoke comparisons have been run, and a later bounded path-exploration loop plus a direct follow-up pilot confirmed that stronger flattened tree models still beat the weak neural ceiling while `et_balanced` remains the only clearly preferred surviving flattened challenger. The operational winner-analysis and held-out checks still show an attractive candidate threshold zone around `0.44` to `0.455`, but a later additive six-fold fixed-threshold forward validation rejected promotion because those higher thresholds reduced false positives only by giving back too much recall and time-aware balanced accuracy versus the locked `0.4288` threshold. A subsequent focal-loss GRU/TCN smoke probe also failed to improve ranking or probability dispersion enough to change that picture, so GRU/TCN sequence work is now effectively frozen behind the flattened ET winner unless a new setup clearly beats the current floor. The current blocker is therefore **not data availability** and no longer primarily threshold promotion, but **temporal model performance and training design**: neural temporal runs remain well below both the anchor branches and the current simple temporal floor, and even the best flattened follow-up still does not clear that floor. The project is therefore in the stage:
+The project has **proven nontrivial signal exists** in multiple anchor branches, especially the daily weight-direction branch and the weekly regime branch. The meal modality was recovered correctly after rejecting an earlier telemetry-grid false positive. A full multi-resolution sequence dataset now exists, conservative flattened temporal baselines have set a strong `days,weeks` binary-loss floor, bounded GRU / TCN / transformer smoke comparisons have been run, and a later bounded path-exploration loop plus a direct follow-up pilot confirmed that stronger flattened tree models still beat the weak neural ceiling while `et_balanced` remains the only clearly preferred surviving flattened challenger. The operational winner-analysis and held-out checks still show an attractive candidate threshold zone around `0.44` to `0.455`, but a later additive six-fold fixed-threshold forward validation rejected promotion because those higher thresholds reduced false positives only by giving back too much recall and time-aware balanced accuracy versus the locked `0.4288` threshold. A subsequent focal-loss GRU/TCN smoke probe also failed to improve ranking or probability dispersion enough to change that picture, so GRU/TCN sequence work is now effectively frozen behind the flattened ET winner unless a new setup clearly beats the current floor. A first bounded meal scenario-planning layer now exists as an additive recommendation stage: it searches observed full-day meal templates for 3/5/7/14/30 day horizons and scores observed next-meal options under explicit enjoyment, health, consistency, weight-support, realism, and robustness criteria. This planner is not a new model promotion; it is an auditable way to rank realistic options using existing artifacts. The current blocker is therefore **not data availability** and no longer primarily threshold promotion, but **temporal model performance and planning-quality refinement**: neural temporal runs remain well below both the anchor branches and the current simple temporal floor, and the new planner still needs reward-weight/repeat-frequency/analog-explanation refinement. The project is therefore in the stage:
 
-> **diagnose which target / modality / architecture combination is genuinely learnable in temporal form before committing to long multi-hour or multi-day neural runs.**
+> **diagnose which target / modality / architecture combination is genuinely learnable in temporal form, while iterating the observed-template planner into a better recommendation layer before committing to long multi-hour or multi-day neural runs.**
 
 ---
 
@@ -349,6 +355,12 @@ They are:
    - `y_next_weight_delta_lb`
 
 3. only then launch a **longer GPU run** on the best target/modality/architecture combination
+
+4. refine the bounded scenario planner without widening beyond observed behavior:
+   - de-duplicate near-identical next-meal options
+   - tune repeat-frequency constraints by horizon
+   - add analog-retrieval explanations for promoted plans
+   - support explicit current-context overrides for weight, steps, and already-eaten meals
 
 See `NEXT_DEVELOPER_HANDOFF.md` for the exact recommended order.
 

@@ -379,6 +379,63 @@ Interpretation:
 - focal loss did **not** improve balanced accuracy or ROC AUC enough to keep GRU/TCN neural sequence work as the leading path
 - for the current repo state, GRU/TCN sequence work should now be treated as **frozen behind the flattened ET winner** unless a new architecture or training design clears `simple_loss_daysweeks_v2` on both ranking and tuned classification behavior
 
+### 4.12 What the first meal scenario-planning layer added
+The first bounded scenario-planning / recommendation layer has now been added via:
+- `run_meal_scenario_planning_v1.py`
+- `score_next_meal_scenario_v1.py`
+- shared helper: `meal_scenario_planning_core_v1.py`
+
+Reference horizon-planning run:
+- `python run_meal_scenario_planning_v1.py --project-root /workspace/foodai --run-name meal_scenario_planning_v1 --candidates-per-horizon 80 --seed 42`
+
+Bundle location:
+- `reports/backtests/meal_scenario_planning/meal_scenario_planning_v1/`
+
+Reference immediate next-meal run:
+- `python score_next_meal_scenario_v1.py --project-root /workspace/foodai --run-name next_meal_scenario_scoring_v1 --current-datetime 2026-04-16T12:00:00 --top-n 12`
+
+Bundle location:
+- `reports/backtests/meal_scenario_planning/next_meal_scenario_scoring_v1/`
+
+Most important implementation choices:
+- the day-plan action space is observed full-day meal templates only
+- each promoted day template must include lunch, dinner, and at least one snack period
+- immediate next-meal actions are observed meal records from historically repeated slot/archetype combinations
+- scoring is a weighted multi-objective reward:
+  - enjoyment
+  - healthfulness
+  - consistency
+  - weight-support
+  - realism
+- robustness is handled by stress-testing step-count variation, weekday/weekend variation, adjacent season, and recent heavier/lighter intake
+- promotion rejects plans with missing required slots, out-of-core calories, consecutive duplicate day templates, repeat-heavy patterns, weak robust weight-support, or excessive fragility
+
+Current reference outcomes:
+- observed templates after required-slot filtering: `229`
+- core observed calorie band used for promotion: about `1363` to `2643` kcal/day
+- promoted candidate counts in the reference run:
+  - 3 days: `38 / 43`
+  - 5 days: `33 / 45`
+  - 7 days: `31 / 45`
+  - 14 days: `24 / 45`
+  - 30 days: `11 / 45`
+- best promoted robust scores by horizon:
+  - 3 days: `0.853`
+  - 5 days: `0.854`
+  - 7 days: `0.789`
+  - 14 days: `0.744`
+  - 30 days: `0.740`
+
+Interpretation:
+- this is a concrete planning layer, not a new predictive model promotion
+- its recommendations are constrained to observed meal archetypes and observed day templates
+- it should be treated as a first auditable planner that can rank realistic options using existing signals, not as proof that the reward weights are final
+- next improvement should be a targeted planner-quality pass:
+  - de-duplicate near-identical meal examples in next-meal output
+  - tune repeat-frequency constraints by horizon
+  - add a direct analog-retrieval explanation for each promoted plan
+  - optionally wire current-context overrides for manually supplied weight, steps, or already-eaten meals
+
 ---
 
 ## 5. Most likely causes of current temporal underperformance
@@ -548,10 +605,18 @@ Use `train_temporal_multires_neural_compare_v1.py` when the goal is to compare n
 - weekly weight-gain-focused branch
 - regime transition model stack
 
+### Scenario planning / recommendation side
+- `run_meal_scenario_planning_v1.py`
+- `score_next_meal_scenario_v1.py`
+- current planning bundle:
+  - `reports/backtests/meal_scenario_planning/meal_scenario_planning_v1/summary.md`
+- current immediate next-meal bundle:
+  - `reports/backtests/meal_scenario_planning/next_meal_scenario_scoring_v1/summary.md`
+
 See `SCRIPT_CATALOG.md` for the full map.
 
 ---
 
 ## 10. One-sentence handoff summary
 
-FoodAI is now a **real multi-resolution personal food/biology modeling system with strong anchored signal and a valid sequence dataset, but the current temporal neural branch has not yet beaten the anchor models and should still be treated as an active diagnosis problem rather than a solved modeling stack.**
+FoodAI is now a **real multi-resolution personal food/biology modeling system with strong anchored signal, a valid sequence dataset, and a first bounded observed-template scenario planner; the current temporal neural branch has still not beaten the anchor models and should remain an active diagnosis problem rather than a solved modeling stack.**

@@ -1010,7 +1010,64 @@ For each script, the goal is to answer:
 
 ---
 
-# 14. Codex runtime support
+# 14. Meal scenario planning / recommendation layer
+
+## `meal_scenario_planning_core_v1.py`
+**Status:** current planning helper  
+**Purpose:** shared implementation for bounded scenario search and immediate next-meal scoring.
+
+**Reads**
+- `training/meal_decision_points.csv`
+- `training/daily_transition/days_transition_matrix.csv`
+- `reports/backtests/temporal_multires/simple_loss_daysweeks_v2_operational_scoring_v1/history_scores.csv` when available
+
+**Core behavior**
+- builds an observed full-day action library from real meal templates only
+- requires lunch, dinner, and at least one snack period for day-plan actions
+- builds observed meal-level actions for next-meal scoring
+- computes explicit enjoyment, healthfulness, consistency, weight-support, and realism rewards
+- stress-tests candidates under nearby step-count, weekday/weekend, seasonal, and recent-intake perturbations
+
+**Current project role**
+- first bounded recommendation/planning layer on top of existing meal semantics and anchor/temporal scoring artifacts
+
+## `run_meal_scenario_planning_v1.py`
+**Status:** current bounded planning entry point  
+**Purpose:** search realistic observed-template eating patterns for 3, 5, 7, 14, and 30 day horizons.
+
+**Writes**
+- `reports/backtests/meal_scenario_planning/<run_name>/scenario_rankings.csv`
+- `reports/backtests/meal_scenario_planning/<run_name>/plan_details.csv`
+- `reports/backtests/meal_scenario_planning/<run_name>/robustness_stress_tests.csv`
+- `reports/backtests/meal_scenario_planning/<run_name>/day_action_library.csv`
+- `reports/backtests/meal_scenario_planning/<run_name>/planning_manifest.json`
+- `reports/backtests/meal_scenario_planning/<run_name>/summary.md`
+
+**Current reference run**
+- `python run_meal_scenario_planning_v1.py --project-root /workspace/foodai --run-name meal_scenario_planning_v1 --candidates-per-horizon 80 --seed 42`
+
+**Current project role**
+- provides the first auditable ranked scenario bundle for horizon planning without training a new model
+
+## `score_next_meal_scenario_v1.py`
+**Status:** current immediate recommendation entry point  
+**Purpose:** score realistic “what should I eat right now?” options using observed meal records and the same reward/projection logic as horizon planning.
+
+**Writes**
+- `reports/backtests/meal_scenario_planning/<run_name>/next_meal_scores.csv`
+- `reports/backtests/meal_scenario_planning/<run_name>/next_meal_projection_stress_tests.csv`
+- `reports/backtests/meal_scenario_planning/<run_name>/next_meal_manifest.json`
+- `reports/backtests/meal_scenario_planning/<run_name>/summary.md`
+
+**Current reference run**
+- `python score_next_meal_scenario_v1.py --project-root /workspace/foodai --run-name next_meal_scenario_scoring_v1 --current-datetime 2026-04-16T12:00:00 --top-n 12`
+
+**Current project role**
+- gives an operator-facing next-meal scoring command grounded in observed archetypes and projected short-horizon effects
+
+---
+
+# 15. Codex runtime support
 
 ## `Dockerfile.codex`
 **Status:** current runtime definition  
@@ -1069,7 +1126,7 @@ For each script, the goal is to answer:
 
 ---
 
-# 15. Repo inventory and documentation support
+# 16. Repo inventory and documentation support
 
 ## `generate_repo_inventory.py`
 **Status:** current utility  
@@ -1081,7 +1138,7 @@ For each script, the goal is to answer:
 
 ---
 
-# 16. Practical “current best path” through the repo
+# 17. Practical “current best path” through the repo
 
 If a future developer wants the most relevant current path rather than the full history, it is:
 
@@ -1116,9 +1173,13 @@ If a future developer wants the most relevant current path rather than the full 
    - `train_temporal_multires_models_v4_1.py`
    - `train_temporal_multires_simple_baselines_v2.py`
 
+9. bounded scenario planning and immediate next-meal scoring
+   - `run_meal_scenario_planning_v1.py`
+   - `score_next_meal_scenario_v1.py`
+
 ---
 
-# 17. Final note
+# 18. Final note
 
 This catalog includes more scripts than a new developer should use on day one.
 
