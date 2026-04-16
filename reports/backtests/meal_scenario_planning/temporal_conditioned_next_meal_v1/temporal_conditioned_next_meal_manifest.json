@@ -1,0 +1,132 @@
+{
+  "bridge_scope": "observed v2 next-meal clusters re-ranked by locked simple_loss_daysweeks_v2 temporal state",
+  "bridge_weights": {
+    "rule": "When the temporal loss score is below the locked threshold, increase health and robust weight-support weights and increase the high-kcal penalty; otherwise preserve more enjoyment weight."
+  },
+  "constraints": {
+    "action_space": "observed meal clusters from score_next_meal_scenario_v2 logic",
+    "no_temporal_retraining": true,
+    "no_unconstrained_meal_generation": true,
+    "temporal_score_interpretation": "ranking / threshold signal only; not a calibrated probability"
+  },
+  "context": {
+    "current_datetime": "2026-04-16T12:00:00",
+    "latest_observed_date": "2026-03-29",
+    "latest_weight_lb": null,
+    "latest_weight_velocity_7d_lb": 0.0,
+    "recent_dominant_archetypes": [
+      "beverage_only",
+      "dessert_snack"
+    ],
+    "recent_food_kcal_mean": 2129.3571428571427,
+    "recent_restaurant_fraction": 0.5535714285714285,
+    "recent_steps_mean": 2210.8571428571427,
+    "season": "spring",
+    "start_date": "2026-03-30",
+    "weekday": "Monday"
+  },
+  "created_at_utc": "2026-04-16T02:06:15.982268+00:00",
+  "day_action_metadata": {
+    "bounds": {
+      "budget_gap_q10": -929.6,
+      "budget_gap_q90": 98.2000000000001,
+      "n_templates": 229,
+      "steps_q10": 834.4,
+      "steps_q90": 4948.000000000001,
+      "total_kcal_q05": 1363.0,
+      "total_kcal_q95": 2643.0
+    },
+    "required_slots": [
+      "lunch",
+      "dinner",
+      "snack"
+    ],
+    "source": "observed full-day templates from training/meal_decision_points.csv joined to daily transitions",
+    "templates_after_required_slot_filter": 229
+  },
+  "day_variant_metadata": {
+    "base_templates": 229,
+    "bounded_variants": 363,
+    "constraint": "variants only scale observed full-day templates within observed archetype-signature calorie ranges",
+    "portion_multiplier_max": 1.12,
+    "portion_multiplier_min": 0.88,
+    "total_day_actions_v2": 592
+  },
+  "meal_action_metadata": {
+    "meal_actions": 1154,
+    "min_archetype_count": 3,
+    "source": "observed meal records from training/meal_decision_points.csv"
+  },
+  "outputs": {
+    "projection_stress_tests": "/workspace/foodai/reports/backtests/meal_scenario_planning/temporal_conditioned_next_meal_v1/temporal_conditioned_projection_stress_tests.csv",
+    "ranked_scores": "/workspace/foodai/reports/backtests/meal_scenario_planning/temporal_conditioned_next_meal_v1/temporal_conditioned_next_meal_scores.csv",
+    "summary": "/workspace/foodai/reports/backtests/meal_scenario_planning/temporal_conditioned_next_meal_v1/summary.md"
+  },
+  "project_root": "/workspace/foodai",
+  "run_name": "temporal_conditioned_next_meal_v1",
+  "source_artifacts": {
+    "meal_planner_v2_reference": "/workspace/foodai/reports/backtests/meal_scenario_planning/next_meal_scenario_scoring_v2",
+    "temporal_policy": "/workspace/foodai/reports/backtests/temporal_multires/simple_loss_daysweeks_v2_operational_policy_v1",
+    "temporal_refresh": "/workspace/foodai/reports/backtests/temporal_multires/simple_loss_daysweeks_v2_operational_refresh_v1",
+    "temporal_scoring": "/workspace/foodai/reports/backtests/temporal_multires/simple_loss_daysweeks_v2_operational_scoring_v1",
+    "temporal_winner": "/workspace/foodai/reports/backtests/temporal_multires/simple_loss_daysweeks_v2"
+  },
+  "temporal": {
+    "pressure": {
+      "locked_threshold": 0.4288,
+      "temporal_decision_label": "negative",
+      "temporal_decision_locked": false,
+      "temporal_loss_score": 0.3817430755033829,
+      "temporal_low_loss_support_pressure": 0.10974096197905116,
+      "temporal_policy_band": "below 0.4288",
+      "temporal_positive_strength": 0.0,
+      "temporal_score_not_calibrated_probability": true
+    },
+    "scorer_command": [
+      "/usr/local/bin/python",
+      "/workspace/foodai/score_temporal_flat_winner_v1.py",
+      "--project-root",
+      "/workspace/foodai",
+      "--run-name",
+      "simple_loss_daysweeks_v2",
+      "--policy-name",
+      "simple_loss_daysweeks_v2_operational_policy_v1",
+      "--scoring-name",
+      "simple_loss_daysweeks_v2_operational_scoring_v1",
+      "--recent-n",
+      "10"
+    ],
+    "scorer_stderr_path": "/workspace/foodai/reports/backtests/meal_scenario_planning/temporal_conditioned_next_meal_v1/temporal_scorer_stderr.txt",
+    "scorer_stdout_path": "/workspace/foodai/reports/backtests/meal_scenario_planning/temporal_conditioned_next_meal_v1/temporal_scorer_stdout.txt",
+    "selected_case": {
+      "anchor_id": "2026-03-29",
+      "anchor_next_period_start": "2026-03-30 00:00:00",
+      "anchor_period_start": "2026-03-29 00:00:00",
+      "decision_locked": false,
+      "decision_locked_label": "negative",
+      "locked_threshold": 0.4288,
+      "modalities": [
+        "days",
+        "weeks"
+      ],
+      "policy_band": "below 0.4288",
+      "policy_name": "simple_loss_daysweeks_v2_operational_policy_v1",
+      "score": 0.3817430755033829,
+      "score_interpretation": "ranking / threshold signal only; not a calibrated probability",
+      "score_not_calibrated_probability": true,
+      "selected_anchor_mode": "latest_eligible",
+      "split_suggested": "test",
+      "target": "y_next_weight_loss_flag",
+      "target_observed_value": null,
+      "threshold_used": 0.4288,
+      "windows": {
+        "days": 7,
+        "meals": 10,
+        "weeks": 4
+      },
+      "winner_model_artifact": "/workspace/foodai/models/temporal_multires/simple_loss_daysweeks_v2/y_next_weight_loss_flag__et.joblib",
+      "winner_run_name": "simple_loss_daysweeks_v2"
+    }
+  },
+  "version": "v1"
+}

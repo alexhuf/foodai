@@ -1116,6 +1116,37 @@ For each script, the goal is to answer:
 **Current project role**
 - preferred operator-facing next-meal scorer; turns repeated meal records into actionable observed clusters with kcal ranges and explanations
 
+## `score_temporal_conditioned_next_meal_v1.py`
+**Status:** current bridge recommendation stage
+**Purpose:** connect the preferred v2 next-meal scorer to the locked `simple_loss_daysweeks_v2` temporal winner so the immediate recommendation is conditioned on current temporal state and recent trajectory context.
+
+**Reads**
+- locked temporal winner artifacts under `reports/backtests/temporal_multires/simple_loss_daysweeks_v2/`
+- locked policy bundle at `reports/backtests/temporal_multires/simple_loss_daysweeks_v2_operational_policy_v1/`
+- operational scorer output at `reports/backtests/temporal_multires/simple_loss_daysweeks_v2_operational_scoring_v1/`
+- operational refresh context at `reports/backtests/temporal_multires/simple_loss_daysweeks_v2_operational_refresh_v1/`
+- v2 meal planner source tables through `meal_scenario_planning_core_v2.py`
+
+**Writes**
+- `reports/backtests/meal_scenario_planning/<run_name>/temporal_conditioned_next_meal_scores.csv`
+- `reports/backtests/meal_scenario_planning/<run_name>/temporal_conditioned_projection_stress_tests.csv`
+- `reports/backtests/meal_scenario_planning/<run_name>/temporal_conditioned_next_meal_manifest.json`
+- `reports/backtests/meal_scenario_planning/<run_name>/summary.md`
+- captured temporal scorer stdout/stderr files for audit
+
+**Core behavior**
+- optionally refreshes the locked temporal score through `score_temporal_flat_winner_v1.py`
+- keeps `simple_loss_daysweeks_v2`, `y_next_weight_loss_flag`, `days,weeks`, and threshold `0.4288` locked
+- scores only observed v2 next-meal clusters; it does not create unconstrained meals
+- uses current datetime, latest/recent weight state when available, recent steps, recent food kcal, and recent dominant meal archetypes
+- re-ranks v2 next-meal clusters by increasing health, projected robust weight support, and high-kcal pressure sensitivity when the temporal loss-support score is below the locked threshold
+
+**Current reference run**
+- `python score_temporal_conditioned_next_meal_v1.py --project-root /workspace/foodai --run-name temporal_conditioned_next_meal_v1 --current-datetime 2026-04-16T12:00:00 --top-n 12 --candidate-pool-n 30`
+
+**Current project role**
+- preferred integrated "what should I eat right now?" path when the recommendation should explicitly account for the locked temporal winner
+
 ---
 
 # 15. Codex runtime support

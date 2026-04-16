@@ -475,8 +475,40 @@ Reference v2 outcomes:
 - next-meal reference output moved from `12` rows / `9` unique meal texts to `12` de-duplicated clusters / `12` unique representative meal texts
 
 Remaining planner refinements:
-- optionally wire current-context overrides for manually supplied weight, steps, already-eaten meals, and budget state
+- optionally wire already-eaten meals and budget state into the temporal-conditioned bridge
 - improve analog explanations further by retrieving nearest historical days/meals, not only score-component explanations
+
+### 4.14 What the temporal-conditioned next-meal bridge added
+The bounded bridge from the locked temporal winner into immediate meal recommendation has now been added via:
+- `score_temporal_conditioned_next_meal_v1.py`
+
+Reference integrated run:
+- `python score_temporal_conditioned_next_meal_v1.py --project-root /workspace/foodai --run-name temporal_conditioned_next_meal_v1 --current-datetime 2026-04-16T12:00:00 --top-n 12 --candidate-pool-n 30`
+
+Bundle location:
+- `reports/backtests/meal_scenario_planning/temporal_conditioned_next_meal_v1/`
+
+Most important implementation choices:
+- the bridge reruns or reads the locked `score_temporal_flat_winner_v1.py` operational scorer for `simple_loss_daysweeks_v2`
+- the temporal score remains a ranking / threshold signal, not a calibrated probability
+- the action space remains the v2 observed next-meal cluster library; the bridge does not generate new meals
+- the re-ranker keeps enjoyment, healthfulness, consistency, realism, and weight-hold/loss support explicit
+- when the current temporal loss-support score is below the locked threshold, health, projected robust weight support, and high-kcal pressure receive more influence
+- optional context overrides now exist for current/recent weight, recent steps, and recent food kcal mean
+
+Reference output from the integrated run:
+- temporal anchor: `2026-03-29`
+- temporal score: `0.381743`
+- locked decision: `negative`
+- policy band: `below 0.4288`
+- top recommendation: `Carne Asada Street Tacos + Mexican Rice And Beans`
+- bridge score / original v2 score: `0.823 / 0.783`
+
+Interpretation:
+- this is a bridge layer, not a temporal retrain or meal-generation expansion
+- the immediate recommendation is now explicitly conditioned on current temporal state and recent trajectory context
+- the exact next command should stress the new bridge with a manually supplied current context rather than changing the locked temporal winner:
+  - `python score_temporal_conditioned_next_meal_v1.py --project-root /workspace/foodai --run-name temporal_conditioned_next_meal_context_probe_v1 --current-datetime 2026-04-16T18:00:00 --recent-steps-mean 3500 --recent-food-kcal-mean 1900 --top-n 12 --candidate-pool-n 40`
 
 ---
 
@@ -652,10 +684,13 @@ Use `train_temporal_multires_neural_compare_v1.py` when the goal is to compare n
 - `score_next_meal_scenario_v1.py`
 - `run_meal_scenario_planning_v2.py`
 - `score_next_meal_scenario_v2.py`
+- `score_temporal_conditioned_next_meal_v1.py`
 - current planning bundle:
   - `reports/backtests/meal_scenario_planning/meal_scenario_planning_v2/summary.md`
 - current immediate next-meal bundle:
   - `reports/backtests/meal_scenario_planning/next_meal_scenario_scoring_v2/summary.md`
+- current temporal-conditioned immediate next-meal bundle:
+  - `reports/backtests/meal_scenario_planning/temporal_conditioned_next_meal_v1/summary.md`
 
 See `SCRIPT_CATALOG.md` for the full map.
 
