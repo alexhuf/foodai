@@ -357,9 +357,9 @@ They are:
 3. only then launch a **longer GPU run** on the best target/modality/architecture combination
 
 4. refine the bounded scenario planner without widening beyond observed behavior:
-   - de-duplicate near-identical next-meal options
-   - tune repeat-frequency constraints by horizon
-   - add analog-retrieval explanations for promoted plans
+   - v2 now de-duplicates near-identical next-meal options into observed clusters
+   - v2 now applies horizon-aware repeat constraints
+   - v2 now adds plain-language plan / meal explanations and bounded observed-portion flexibility
    - support explicit current-context overrides for weight, steps, and already-eaten meals
 
 See `NEXT_DEVELOPER_HANDOFF.md` for the exact recommended order.

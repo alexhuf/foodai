@@ -430,11 +430,53 @@ Interpretation:
 - this is a concrete planning layer, not a new predictive model promotion
 - its recommendations are constrained to observed meal archetypes and observed day templates
 - it should be treated as a first auditable planner that can rank realistic options using existing signals, not as proof that the reward weights are final
-- next improvement should be a targeted planner-quality pass:
-  - de-duplicate near-identical meal examples in next-meal output
-  - tune repeat-frequency constraints by horizon
-  - add a direct analog-retrieval explanation for each promoted plan
-  - optionally wire current-context overrides for manually supplied weight, steps, or already-eaten meals
+
+### 4.13 What meal scenario-planning v2 improved
+The targeted planner-quality pass has now been added via:
+- `run_meal_scenario_planning_v2.py`
+- `score_next_meal_scenario_v2.py`
+- shared helper: `meal_scenario_planning_core_v2.py`
+
+Reference horizon-planning run:
+- `python run_meal_scenario_planning_v2.py --project-root /workspace/foodai --run-name meal_scenario_planning_v2 --candidates-per-horizon 80 --seed 42`
+
+Bundle location:
+- `reports/backtests/meal_scenario_planning/meal_scenario_planning_v2/`
+
+Reference immediate next-meal run:
+- `python score_next_meal_scenario_v2.py --project-root /workspace/foodai --run-name next_meal_scenario_scoring_v2 --current-datetime 2026-04-16T12:00:00 --top-n 12`
+
+Bundle location:
+- `reports/backtests/meal_scenario_planning/next_meal_scenario_scoring_v2/`
+
+Most important implementation choices:
+- v2 keeps the core realism constraint: all actions are still observed day templates or observed meal records/archetype clusters
+- day planning adds bounded portion variants by scaling observed templates only within observed archetype-signature calorie ranges
+- horizon planning applies repeat limits that tighten by horizon and reports source-template/signature diversity
+- next-meal scoring clusters near-identical observed meal records by archetype, service form, protein anchor, and canonical components
+- summaries and CSVs now include plain-language explanations and observed kcal ranges for portion guidance
+
+Reference v2 outcomes:
+- observed base day templates after required-slot filtering: `229`
+- bounded day variants added: `363`
+- total v2 day actions: `592`
+- promoted candidate counts in the reference run:
+  - total promoted: `170 / 253`
+- best promoted robust scores by horizon:
+  - 3 days: `0.856`
+  - 5 days: `0.803`
+  - 7 days: `0.763`
+  - 14 days: `0.756`
+  - 30 days: `0.698`
+- best-plan diversity improved versus v1:
+  - 5-day best plan moved from `3` to `5` unique source templates
+  - 7-day best plan moved from `6` to `7` unique source templates
+  - 30-day best plan moved from `14` to `19` unique source templates
+- next-meal reference output moved from `12` rows / `9` unique meal texts to `12` de-duplicated clusters / `12` unique representative meal texts
+
+Remaining planner refinements:
+- optionally wire current-context overrides for manually supplied weight, steps, already-eaten meals, and budget state
+- improve analog explanations further by retrieving nearest historical days/meals, not only score-component explanations
 
 ---
 
@@ -608,10 +650,12 @@ Use `train_temporal_multires_neural_compare_v1.py` when the goal is to compare n
 ### Scenario planning / recommendation side
 - `run_meal_scenario_planning_v1.py`
 - `score_next_meal_scenario_v1.py`
+- `run_meal_scenario_planning_v2.py`
+- `score_next_meal_scenario_v2.py`
 - current planning bundle:
-  - `reports/backtests/meal_scenario_planning/meal_scenario_planning_v1/summary.md`
+  - `reports/backtests/meal_scenario_planning/meal_scenario_planning_v2/summary.md`
 - current immediate next-meal bundle:
-  - `reports/backtests/meal_scenario_planning/next_meal_scenario_scoring_v1/summary.md`
+  - `reports/backtests/meal_scenario_planning/next_meal_scenario_scoring_v2/summary.md`
 
 See `SCRIPT_CATALOG.md` for the full map.
 

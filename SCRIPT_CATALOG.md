@@ -1013,7 +1013,7 @@ For each script, the goal is to answer:
 # 14. Meal scenario planning / recommendation layer
 
 ## `meal_scenario_planning_core_v1.py`
-**Status:** current planning helper  
+**Status:** active historical planning helper  
 **Purpose:** shared implementation for bounded scenario search and immediate next-meal scoring.
 
 **Reads**
@@ -1032,7 +1032,7 @@ For each script, the goal is to answer:
 - first bounded recommendation/planning layer on top of existing meal semantics and anchor/temporal scoring artifacts
 
 ## `run_meal_scenario_planning_v1.py`
-**Status:** current bounded planning entry point  
+**Status:** active historical bounded planning entry point  
 **Purpose:** search realistic observed-template eating patterns for 3, 5, 7, 14, and 30 day horizons.
 
 **Writes**
@@ -1050,7 +1050,7 @@ For each script, the goal is to answer:
 - provides the first auditable ranked scenario bundle for horizon planning without training a new model
 
 ## `score_next_meal_scenario_v1.py`
-**Status:** current immediate recommendation entry point  
+**Status:** active historical immediate recommendation entry point  
 **Purpose:** score realistic “what should I eat right now?” options using observed meal records and the same reward/projection logic as horizon planning.
 
 **Writes**
@@ -1064,6 +1064,57 @@ For each script, the goal is to answer:
 
 **Current project role**
 - gives an operator-facing next-meal scoring command grounded in observed archetypes and projected short-horizon effects
+
+## `meal_scenario_planning_core_v2.py`
+**Status:** current planning helper  
+**Purpose:** additive v2 improvement layer for observed-template scenario search and immediate next-meal scoring.
+
+**Reads**
+- same source tables as `meal_scenario_planning_core_v1.py`
+
+**Core behavior**
+- preserves the realism constraint: no unconstrained meal generation
+- expands day actions only through bounded portion variants inside observed archetype-signature calorie ranges
+- applies horizon-aware repeat limits to source templates and archetype signatures
+- clusters near-identical next-meal records by archetype, service form, protein anchor, and canonical components
+- adds plain-language plan, day, and meal explanations
+
+**Current project role**
+- preferred helper for planner-quality refinement while keeping the action space observed and auditable
+
+## `run_meal_scenario_planning_v2.py`
+**Status:** current bounded planning entry point  
+**Purpose:** search realistic observed-template eating patterns with v2 repeat constraints, bounded portion variants, and explanations.
+
+**Writes**
+- `reports/backtests/meal_scenario_planning/<run_name>/scenario_rankings.csv`
+- `reports/backtests/meal_scenario_planning/<run_name>/plan_details.csv`
+- `reports/backtests/meal_scenario_planning/<run_name>/robustness_stress_tests.csv`
+- `reports/backtests/meal_scenario_planning/<run_name>/day_action_library.csv`
+- `reports/backtests/meal_scenario_planning/<run_name>/planning_manifest.json`
+- `reports/backtests/meal_scenario_planning/<run_name>/summary.md`
+
+**Current reference run**
+- `python run_meal_scenario_planning_v2.py --project-root /workspace/foodai --run-name meal_scenario_planning_v2 --candidates-per-horizon 80 --seed 42`
+
+**Current project role**
+- preferred auditable horizon planner; less repetitive than v1, with explicit repeat diagnostics and explanation fields
+
+## `score_next_meal_scenario_v2.py`
+**Status:** current immediate recommendation entry point  
+**Purpose:** score de-duplicated observed next-meal option clusters with projected day support and portion guidance.
+
+**Writes**
+- `reports/backtests/meal_scenario_planning/<run_name>/next_meal_scores.csv`
+- `reports/backtests/meal_scenario_planning/<run_name>/next_meal_projection_stress_tests.csv`
+- `reports/backtests/meal_scenario_planning/<run_name>/next_meal_manifest.json`
+- `reports/backtests/meal_scenario_planning/<run_name>/summary.md`
+
+**Current reference run**
+- `python score_next_meal_scenario_v2.py --project-root /workspace/foodai --run-name next_meal_scenario_scoring_v2 --current-datetime 2026-04-16T12:00:00 --top-n 12`
+
+**Current project role**
+- preferred operator-facing next-meal scorer; turns repeated meal records into actionable observed clusters with kcal ranges and explanations
 
 ---
 
